@@ -11,11 +11,11 @@ import java.util.List;
 public abstract class HttpHandlerBase implements HttpHandler {
     List<String> pathList;
 
-    HttpHandlerBase() {
+    public HttpHandlerBase() {
         pathList = new ArrayList<>();
     }
 
-    HttpHandlerBase(List<String> pathList) {
+    public HttpHandlerBase(List<String> pathList) {
         setProcessingPaths(pathList);
     }
 
@@ -26,6 +26,10 @@ public abstract class HttpHandlerBase implements HttpHandler {
 
     public void setProcessingPaths(List<String> pathList) {
         this.pathList = pathList;
+    }
+
+    public void addPath(String path) {
+        pathList.add(path);
     }
 
     // --------------------
