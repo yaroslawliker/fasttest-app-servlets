@@ -1,5 +1,6 @@
 package org.yarek.fasttestapp.routing;
 
+import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
@@ -33,6 +34,18 @@ public class Controller extends HttpServlet {
 
     @Override
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+
+        String uri = req.getRequestURI();
+        if (uri.endsWith(".jsp")) {
+            RequestDispatcher jspDispatcher = req.getServletContext().getNamedDispatcher("jsp");
+            if (jspDispatcher == null) {
+                resp.sendError(HttpServletResponse.SC_NOT_FOUND);
+                return;
+            }
+            jspDispatcher.forward(req, resp);
+            return;
+        }
+
         String path = req.getPathInfo();
         for (HttpHandler handler : handlers) {
             if (handler.isProcessingPath(path)) {
