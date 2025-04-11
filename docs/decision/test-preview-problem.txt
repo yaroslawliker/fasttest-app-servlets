@@ -1,0 +1,18 @@
+
+# Problem
+    Test class was created to store data for Tests. This class contains lots of data,
+such as questions and answer. When querying for test preview page (e.g. show 10 test),
+we need only description, name, date and author - not questions. In this case,
+instantiating all info for this objects can be too slow.
+
+# Solutions:
+    1) Still use Test class, but not fill in with all info.
+        Breaks down the encapsulation, these instances became not full. It would be hard to
+        test and can course problems.
+    2) Load ap all info into Test - this can be too slow, but encapsulation remains.
+    3) Make another TestPreview class.
+
+# Taken solution:
+    3) It has more code, but the solution is more clear and solve
+
+For more detailed description and solutions https://chatgpt.com/share/67f90fcb-4de8-8000-b6e1-4fd65e6fb135

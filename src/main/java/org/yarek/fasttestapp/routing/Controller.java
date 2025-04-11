@@ -36,6 +36,7 @@ public class Controller extends HttpServlet {
     protected void service(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
 
         String path = req.getPathInfo();
+
         for (HttpHandler handler : handlers) {
             if (handler.isProcessingPath(path)) {
                 handler.handle(req, resp);
