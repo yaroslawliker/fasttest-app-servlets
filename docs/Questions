@@ -1,0 +1,8 @@
+Here are stored questions about app design to aks the teacher or other experienced programmers.
+
+
+Was the Model in addition to DAO so bad?
+    See docs/decisions/few-DAO-instead-of-Model-interface.txt
+
+
+
