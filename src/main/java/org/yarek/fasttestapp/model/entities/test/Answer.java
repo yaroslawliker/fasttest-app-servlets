@@ -9,6 +9,11 @@ public class Answer {
         content = "Answer";
     }
 
+    public Answer(String content, boolean isCorrect) {
+        setContent(content);
+        setCorrect(isCorrect);
+    }
+
     public boolean isCorrect() { return isCorrect; }
     public void setCorrect(boolean correct) { isCorrect = correct; }
 
