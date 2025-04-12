@@ -84,6 +84,28 @@ public class QuizBlank {
         return maxScoreArray;
     }
 
+    /**
+     * Gets total max score can be gained by the quiz
+     */
+    public float getMaxScore() {
+        float maxScore = 0;
+        for (float v : getMaxScoreArray()) {
+            maxScore += v;
+        }
+        return maxScore;
+    }
+
+    /**
+     * Gets score gained by the quiz
+     */
+    public float getScore() {
+        float maxScore = 0;
+        for (float v : getScoredArray()) {
+            maxScore += v;
+        }
+        return maxScore;
+    }
+
     private static class AnsweredQuestion {
         boolean[] answered;
         AnsweredQuestion(int answerAmount) {
