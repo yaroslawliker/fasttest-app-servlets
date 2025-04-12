@@ -1,0 +1,13 @@
+
+# Before refactoring
+    I had a Model interface, which had methods for doing all actions, that
+the application can need.
+    Such as: authenticate, getUser, getTestPreviews, getTestById, saveNewTest, registerQuizPassed.
+
+# Problem
+    This is a design patter Facade, but it violates the (SRP) Single Responsibility Principle.
+    Every time new action is needed, we have to add it to the Model and recompile implementations, ect.
+
+# After refactoring
+    DAO classes took all the methods, previously existed inside Model class.
+
