@@ -4,21 +4,21 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Represents a filled up test, ready to be checked
- * Must be created from an existing test. Can be checked against it
+ * Represents a filled up quiz, ready to be checked
+ * Must be created from an existing quiz. Can be checked against it
  */
-public class TestBlank {
+public class QuizBlank {
 
-    Test test;
+    Quiz quiz;
     private List<AnsweredQuestion> answeredQuestionS;
 
-    TestBlank(Test test) {
+    QuizBlank(Quiz quiz) {
 
-        this.test = test;
+        this.quiz = quiz;
 
         answeredQuestionS = new ArrayList<AnsweredQuestion>();
 
-        for (Question question : test.getQuestions()) {
+        for (Question question : quiz.getQuestions()) {
             int answerAmount = question.getAnswers().size();
             AnsweredQuestion answeredQuestion = new AnsweredQuestion(answerAmount);
             answeredQuestionS.add(answeredQuestion);
@@ -42,12 +42,12 @@ public class TestBlank {
             int correctAnswers = 0;
             for (int j = 0; j < answers; j++) {
                 boolean isChecked  = answeredQuestion.isChoice(i);
-                boolean isCorrect = test.getQuestions().get(i).getAnswers().get(j).isCorrect();
+                boolean isCorrect = quiz.getQuestions().get(i).getAnswers().get(j).isCorrect();
                 if (isChecked && isCorrect || !isChecked && !isCorrect) {
                     correctAnswers++;
                 }
             }
-            scoredArray[i] = (float) correctAnswers / answers * test.getQuestions().get(i).getScore();
+            scoredArray[i] = (float) correctAnswers / answers * quiz.getQuestions().get(i).getScore();
         }
         return scoredArray;
     }

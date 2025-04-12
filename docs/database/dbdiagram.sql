@@ -11,8 +11,11 @@ Table users {
 }
 
 
-Table tests {
+Table quizs {
   id serial [primary key]
+  name varchar(100)
+  description text
+  creationDate date
   owner integer [ref: > users.id]
 }
 
@@ -20,7 +23,7 @@ Table questions {
   id serial [primary key]
   content text
   score integer
-  test integer [ref: > tests.id]
+  test integer [ref: > quizs.id]
 }
 
 Table answers {
@@ -33,6 +36,6 @@ Table answers {
 Table results {
   id serial [primary key]
   user integer [ref: > users.id]
-  test integer [ref: > tests.id]
+  test integer [ref: > quizs.id]
   score integer
 }

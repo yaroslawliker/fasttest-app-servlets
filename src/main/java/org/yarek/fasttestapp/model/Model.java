@@ -1,8 +1,8 @@
 package org.yarek.fasttestapp.model;
 
 import org.yarek.fasttestapp.model.entities.User;
-import org.yarek.fasttestapp.model.entities.test.Test;
-import org.yarek.fasttestapp.model.entities.test.TestPreview;
+import org.yarek.fasttestapp.model.entities.test.Quiz;
+import org.yarek.fasttestapp.model.entities.test.QuizPreview;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
 import java.util.List;
@@ -17,9 +17,9 @@ public interface Model {
     String authenticate(String username, String password);
     User getUser(String userId) throws UsernameAlreadyExistsException;
 
-    void getTestPreviews(List<TestPreview> testPreviews);
-    void getTestPreviews(List<TestPreview> testPreviews, int amount);
+    void getTestPreviews(List<QuizPreview> quizPreviews);
+    void getTestPreviews(List<QuizPreview> quizPreviews, int amount);
 
-    Test getTestById(String testId);
-    void saveNewTest(Test test);
+    Quiz getTestById(String testId);
+    void saveNewTest(Quiz quiz);
 }

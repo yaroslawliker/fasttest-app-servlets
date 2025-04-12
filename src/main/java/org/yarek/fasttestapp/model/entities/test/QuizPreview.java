@@ -2,7 +2,7 @@ package org.yarek.fasttestapp.model.entities.test;
 
 import java.util.Date;
 
-public class TestPreview {
+public class QuizPreview {
 
     private final String id;
     private final String ownerUsername;
@@ -10,7 +10,7 @@ public class TestPreview {
     private final String description;
     private final Date creationDate;
 
-    public TestPreview(String id, String ownerUsername, String name, String description, Date creationDate) {
+    public QuizPreview(String id, String ownerUsername, String name, String description, Date creationDate) {
         this.id = id;
         this.ownerUsername = ownerUsername;
         this.name = name;

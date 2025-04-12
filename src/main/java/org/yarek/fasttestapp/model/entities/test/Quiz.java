@@ -4,11 +4,11 @@ import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Class represents a test (exam). It consists of   questions with possible answers.
+ * Class represents a quiz (exam, test). It consists of questions with possible answers.
  *
  */
 
-public class Test {
+public class Quiz {
 
     private String id;
     private String ownerUsername;
@@ -18,12 +18,12 @@ public class Test {
 
     private List<Question> questions;
 
-    public Test() {
+    public Quiz() {
         id = null;
         ownerUsername = null;
 
-        name = "Test";
-        description = "Test description";
+        name = "Quiz";
+        description = "Quiz description";
 
         questions = new ArrayList<Question>();
     }
@@ -45,7 +45,7 @@ public class Test {
     public void addQuestion(Question question) { questions.add(question); }
 
     /**
-     * Checks if test is a representation of real saved in DB instance
+     * Checks if quiz is a representation of real saved in DB instance
      */
     boolean isMappedToDatabase() {
         return id != null && ownerUsername != null;

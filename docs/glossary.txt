@@ -1,0 +1,3 @@
+
+Quiz - a quiz in an app the user can pass.
+    Named so to avoid conflicts with Test in JUnit
