@@ -35,22 +35,40 @@ public class QuizBlank {
 
     /**
      * Gets scored array, which contains scores for each question.
+     * Returns formula
+     *      score = (correct - wrong) / total_correct * maxScore
+     *  or 0, if score < 0
+     *
      */
     public float[] getScoredArray() {
         float[] scoredArray = new float[answeredQuestionS.size()];
 
+        // Check every answer
         for (int i = 0; i < answeredQuestionS.size(); i++) {
             AnsweredQuestion answeredQuestion = answeredQuestionS.get(i);
-            int answers = answeredQuestion.getAnswerCount();
-            int correctAnswers = 0;
-            for (int j = 0; j < answers; j++) {
-                boolean isChecked  = answeredQuestion.isChoice(i);
+            int correctlyMarkedAnswers = 0;
+            int totalCorrectAnswers = 0;
+            for (int j = 0; j < answeredQuestion.getAnswerCount(); j++) {
+                boolean isChecked  = answeredQuestion.isChoice(j);
                 boolean isCorrect = quiz.getQuestions().get(i).getAnswers().get(j).isCorrect();
-                if (isChecked && isCorrect || !isChecked && !isCorrect) {
-                    correctAnswers++;
+
+                if (isCorrect) {
+                    totalCorrectAnswers++;
+                }
+
+                if (isChecked) {
+                    if (isCorrect) {
+                        correctlyMarkedAnswers++;
+                    } else {
+                        correctlyMarkedAnswers--;
+                    }
                 }
             }
-            scoredArray[i] = (float) correctAnswers / answers * quiz.getQuestions().get(i).getScore();
+            float gainedScore = (float) correctlyMarkedAnswers / totalCorrectAnswers * quiz.getQuestions().get(i).getScore();
+            if (gainedScore < 0) {
+                gainedScore = 0;
+            }
+            scoredArray[i] = gainedScore;
         }
         return scoredArray;
     }
