@@ -17,8 +17,8 @@ public interface Model {
     String authenticate(String username, String password);
     User getUser(String userId);
 
-    void getTestPreviews(List<QuizPreview> quizPreviews);
-    void getTestPreviews(List<QuizPreview> quizPreviews, int amount);
+    List<QuizPreview> getTestPreviews();
+    List<QuizPreview> getTestPreviews(int amount);
 
     Quiz getTestById(String testId);
     void saveNewTest(Quiz quiz);
