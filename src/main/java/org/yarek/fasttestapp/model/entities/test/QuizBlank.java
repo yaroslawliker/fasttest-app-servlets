@@ -12,7 +12,7 @@ public class QuizBlank {
     Quiz quiz;
     private List<AnsweredQuestion> answeredQuestionS;
 
-    QuizBlank(Quiz quiz) {
+    public QuizBlank(Quiz quiz) {
 
         this.quiz = quiz;
 
@@ -33,6 +33,9 @@ public class QuizBlank {
         return answeredQuestionS.get(questionIndex).isChoice(answerIndex);
     }
 
+    /**
+     * Gets scored array, which contains scores for each question.
+     */
     public float[] getScoredArray() {
         float[] scoredArray = new float[answeredQuestionS.size()];
 
@@ -50,6 +53,17 @@ public class QuizBlank {
             scoredArray[i] = (float) correctAnswers / answers * quiz.getQuestions().get(i).getScore();
         }
         return scoredArray;
+    }
+
+    /**
+     * Gets an array, which contains maximum scores for all questions
+      */
+    public float[] getMaxScoreArray() {
+        float[] maxScoreArray = new float[quiz.getQuestions().size()];
+        for (int i = 0; i < quiz.getQuestions().size(); i++) {
+            maxScoreArray[i] = quiz.getQuestions().get(i).getScore();
+        }
+        return maxScoreArray;
     }
 
     private static class AnsweredQuestion {
