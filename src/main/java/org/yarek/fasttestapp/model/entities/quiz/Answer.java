@@ -1,4 +1,4 @@
-package org.yarek.fasttestapp.model.entities.test;
+package org.yarek.fasttestapp.model.entities.quiz;
 
 public class Answer {
     private boolean isCorrect;

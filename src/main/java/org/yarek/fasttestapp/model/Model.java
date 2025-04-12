@@ -1,8 +1,8 @@
 package org.yarek.fasttestapp.model;
 
 import org.yarek.fasttestapp.model.entities.User;
-import org.yarek.fasttestapp.model.entities.test.Quiz;
-import org.yarek.fasttestapp.model.entities.test.QuizPreview;
+import org.yarek.fasttestapp.model.entities.quiz.Quiz;
+import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
 import java.util.List;

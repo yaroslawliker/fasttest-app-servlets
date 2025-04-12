@@ -1,4 +1,4 @@
-package org.yarek.fasttestapp.model.entities.test;
+package org.yarek.fasttestapp.model.entities.quiz;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
