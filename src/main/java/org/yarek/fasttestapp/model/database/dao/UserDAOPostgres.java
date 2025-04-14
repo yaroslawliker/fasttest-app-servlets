@@ -21,7 +21,6 @@ public class UserDAOPostgres implements UserDAO {
         try(Connection connection = dataSource.getConnection();) {
 
             // Getting users params
-            String id = user.getId();
             String username = user.getUsername();
             String password = user.getPassword();
 
@@ -42,7 +41,6 @@ public class UserDAOPostgres implements UserDAO {
             String saveUserSQL = "INSERT INTO users (id, username, password) VALUES (?, ?, ?)";
 
             PreparedStatement saveStatement = connection.prepareStatement(saveUserSQL);
-            saveStatement.setString(1, id);
             saveStatement.setString(2, username);
             saveStatement.setString(3, password);
             saveStatement.executeUpdate();
@@ -64,7 +62,6 @@ public class UserDAOPostgres implements UserDAO {
             ResultSet resultSet = saveStatement.executeQuery();
 
             User user = new User();
-            user.setId(resultSet.getString("id"));
             user.setUsername(resultSet.getString("username"));
             user.setPassword(resultSet.getString("password"));
 
