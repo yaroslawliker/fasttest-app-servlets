@@ -1,5 +1,6 @@
 package org.yarek.fasttestapp.model.database.dao;
 
+import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
@@ -8,18 +9,10 @@ import java.sql.*;
 
 public class UserDAOPostgres implements UserDAO {
 
-    private static final HikariDataSource dataSource = new HikariDataSource();
+    private static HikariDataSource dataSource;
 
-    static {
-        dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/fasttestapp");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("postgres");
-        dataSource.setMaximumPoolSize(5);
-    }
-
-    public UserDAOPostgres() {
-
+    public static void setDataSource(HikariDataSource dataSource) {
+        UserDAOPostgres.dataSource = dataSource;
     }
 
     @Override
