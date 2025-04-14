@@ -5,6 +5,7 @@ import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.yarek.fasttestapp.model.Constants;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
@@ -33,9 +34,11 @@ class UserDAOPostgresTest {
     private static void setUpHikari() {
         dataSource = new HikariDataSource();
         dataSource.setDriverClassName("org.postgresql.Driver");
-        dataSource.setJdbcUrl("jdbc:postgresql://localhost:5432/fasttestapp");
-        dataSource.setUsername("postgres");
-        dataSource.setPassword("1234");
+
+        dataSource.setJdbcUrl(Constants.DATABASE_URL);
+        dataSource.setUsername(Constants.DATABASE_USER);
+        dataSource.setPassword(Constants.DATABASE_PASSWORD);
+
         dataSource.setSchema("test");
         dataSource.setMaximumPoolSize(10);
 
