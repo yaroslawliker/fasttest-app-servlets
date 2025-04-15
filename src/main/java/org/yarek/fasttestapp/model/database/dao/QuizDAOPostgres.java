@@ -103,7 +103,7 @@ public class QuizDAOPostgres implements QuizDAO {
         }
     }
 
-    List<Question> getQuestionsOfQuiz(String quizId) {
+    private List<Question> getQuestionsOfQuiz(String quizId) {
         List<Question> questions = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
             String sql = "SELECT id, content, score FROM questions WHERE quiz = ?";
@@ -132,7 +132,7 @@ public class QuizDAOPostgres implements QuizDAO {
         return questions;
     }
 
-    List<Answer> getAnswersOfQuestion(String questionId) {
+    private List<Answer> getAnswersOfQuestion(String questionId) {
         try (Connection connection = dataSource.getConnection();
             PreparedStatement questionStatement = connection.prepareStatement("SELECT content, is_correct FROM answers WHERE question = ?");
         ) {
@@ -153,7 +153,101 @@ public class QuizDAOPostgres implements QuizDAO {
 
     @Override
     public void saveNewQuiz(Quiz quiz) {
+        Connection connection = null;
+        try {
+            connection = dataSource.getConnection();
 
+            // Getting user id instead of username
+            String ownerId = getOwnerId(quiz.getOwnerUsername());
+
+            // Saving the quiz
+            connection.setAutoCommit(false);
+
+            String sql = "INSERT INTO quizzes (name, description, creation_date, owner) VALUES (?, ?, ?, ?);";
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, quiz.getName());
+            statement.setString(2, quiz.getDescription());
+            statement.setDate(3, new java.sql.Date(quiz.getCreationDate().getTime()));
+            statement.setInt(4, Integer.parseInt(ownerId));
+            // Executing
+            statement.executeUpdate();
+            ResultSet rs = statement.getGeneratedKeys();
+            // Getting back the created id
+            if (!rs.next()) {
+                throw new RuntimeException("No id was returned after saving a quiz.");
+            }
+            int quizId = rs.getInt("id");
+            rs.close();
+            statement.close();
+
+            // Saving questions
+            saveQuestions(quiz.getQuestions(), quizId, connection);
+
+            // Commiting transaction
+            connection.commit();
+
+        } catch (SQLException | RuntimeException e) {
+            // Rolling back the transaction if something had failed
+            try {
+                assert connection != null;
+                connection.rollback();
+            } catch (SQLException ex) {
+                throw new RuntimeException(e);
+            }
+            throw new RuntimeException(e);
+
+        } finally {
+            // Closing the connection
+            try {
+                assert connection != null;
+                connection.close();
+            } catch (SQLException e) {
+                throw new RuntimeException(e);
+            }
+        }
+
+
+
+    }
+
+    private void saveQuestions(List<Question> questions, int quizId, Connection connection) throws SQLException {
+        String sql = "INSERT INTO questions (content, score, quiz) VALUES (?, ?, ?);";
+
+        for (Question question : questions) {
+            // Save question itself
+            PreparedStatement statement = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            statement.setString(1, question.getContent());
+            statement.setFloat(2, question.getScore());
+            statement.setInt(3, quizId);
+
+            statement.executeUpdate();
+
+            // Getting the new question id
+            ResultSet rs = statement.getGeneratedKeys();
+
+            if (!rs.next()) {
+                throw new RuntimeException("No id was returned after saving a question");
+            }
+
+            int questionId = rs.getInt("id");
+            rs.close();
+            statement.close();
+
+            saveAnswers(question.getAnswers(), questionId, connection);
+        }
+    }
+
+    private void saveAnswers(List<Answer> answers, int questionId, Connection connection) throws SQLException {
+        String sql = "INSERT INTO answers (content, is_correct, question) VALUES (?, ?, ?);";
+        PreparedStatement statement = connection.prepareStatement(sql);
+        for (Answer answer : answers) {
+            statement.setString(1, answer.getContent());
+            statement.setBoolean(2, answer.isCorrect());
+            statement.setInt(3, questionId);
+            statement.addBatch();
+        }
+        statement.executeBatch();
+        statement.close();
     }
 
     @Override
@@ -179,5 +273,26 @@ public class QuizDAOPostgres implements QuizDAO {
             throw new RuntimeException(e);
         }
         return username;
+    }
+
+    private String getOwnerId(String username) {
+        String ownerId;
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement userStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ?");
+        ) {
+            userStatement.setString(1, username);
+            ResultSet userRs = userStatement.executeQuery();
+
+            if (userRs.next()) {
+                ownerId = String.valueOf(userRs.getInt("id"));
+            } else {
+                throw new RuntimeException("No user with username: " + username);
+            }
+            userRs.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return ownerId;
     }
 }
