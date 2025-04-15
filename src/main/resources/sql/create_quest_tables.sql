@@ -9,7 +9,7 @@ CREATE TABLE quizzes (
 CREATE TABLE questions (
     id serial PRIMARY KEY,
     content text,
-    score integer,
+    score numeric,
     quiz integer REFERENCES quizzes(id)
 );
 
