@@ -6,11 +6,11 @@ import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
 import java.util.List;
 
 public interface QuizDAO {
-    List<QuizPreview> getTestPreviews();
-    List<QuizPreview> getTestPreviews(int amount);
+    List<QuizPreview> getQuizPreviews();
+    List<QuizPreview> getQuizPreviews(int amount);
 
     Quiz getQuizById(String quizId);
-    void saveNewTest(Quiz quiz);
+    void saveNewQuiz(Quiz quiz);
 
     void registerQuizPassed(String username, String quizId, float score);
 }

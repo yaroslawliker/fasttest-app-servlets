@@ -21,12 +21,12 @@ public class QuizDAOPostgres implements QuizDAO {
     }
 
     @Override
-    public List<QuizPreview> getTestPreviews() {
-        return getTestPreviews(deafultPreviewAmount);
+    public List<QuizPreview> getQuizPreviews() {
+        return getQuizPreviews(deafultPreviewAmount);
     }
 
     @Override
-    public List<QuizPreview> getTestPreviews(int amount) {
+    public List<QuizPreview> getQuizPreviews(int amount) {
         List<QuizPreview> testPreviews = new ArrayList<>();
 
         try (Connection quizzesConnection = dataSource.getConnection();
@@ -69,7 +69,7 @@ public class QuizDAOPostgres implements QuizDAO {
         try (Connection connection = dataSource.getConnection();
         ) {
             PreparedStatement quizStatement = connection.prepareStatement("SELECT id, name, description, creation_date, owner FROM quizzes WHERE id = ?");
-            quizStatement.setString(1, quizId);
+            quizStatement.setInt(1, Integer.parseInt(quizId));
             ResultSet quizRs = quizStatement.executeQuery();
             if (!quizRs.next()) {
                 throw new RuntimeException("No such quiz: " + quizId);
@@ -77,7 +77,7 @@ public class QuizDAOPostgres implements QuizDAO {
             String name = quizRs.getString("name");
             String description = quizRs.getString("description");
             Date creationDate = quizRs.getDate("creation_date");
-            String ownerId = quizRs.getString("owner");
+            String ownerId = String.valueOf(quizRs.getInt("owner"));
             quizStatement.close();
             quizRs.close();
 
@@ -106,13 +106,13 @@ public class QuizDAOPostgres implements QuizDAO {
     List<Question> getQuestionsOfQuiz(String quizId) {
         List<Question> questions = new ArrayList<>();
         try (Connection connection = dataSource.getConnection()) {
-            String sql = "SELECT content, score FROM questions WHERE quiz = ?";
+            String sql = "SELECT id, content, score FROM questions WHERE quiz = ?";
             PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setString(1, quizId);
+            preparedStatement.setInt(1, Integer.parseInt(quizId));
             ResultSet resultSet = preparedStatement.executeQuery();
             while (resultSet.next()) {
                 // Get direct parameters
-                String id = resultSet.getString("id");
+                String id = String.valueOf(resultSet.getInt("id"));
                 String content = resultSet.getString("content");
                 float score = resultSet.getFloat("score");
                 Question question = new Question(content, score);
@@ -134,7 +134,7 @@ public class QuizDAOPostgres implements QuizDAO {
 
     List<Answer> getAnswersOfQuestion(String questionId) {
         try (Connection connection = dataSource.getConnection();
-            PreparedStatement questionStatement = connection.prepareStatement("SELECT text, content, is_correct FROM answers WHERE question = ?");
+            PreparedStatement questionStatement = connection.prepareStatement("SELECT content, is_correct FROM answers WHERE question = ?");
         ) {
             questionStatement.setString(1, questionId);
             ResultSet questionRs = questionStatement.executeQuery();
@@ -152,7 +152,7 @@ public class QuizDAOPostgres implements QuizDAO {
     }
 
     @Override
-    public void saveNewTest(Quiz quiz) {
+    public void saveNewQuiz(Quiz quiz) {
 
     }
 
@@ -161,13 +161,13 @@ public class QuizDAOPostgres implements QuizDAO {
 
     }
 
-    String getOwner(String ownerId) {
+    private String getOwner(String ownerId) {
         String username;
 
         try (Connection connection = dataSource.getConnection();
              PreparedStatement userStatement = connection.prepareStatement("SELECT username FROM users WHERE id = ?"); ) {
 
-            userStatement.setString(1, ownerId);
+            userStatement.setInt(1, Integer.parseInt(ownerId));
             ResultSet userRs = userStatement.executeQuery();
             if (userRs.next()) {
                 username = userRs.getString("username");
