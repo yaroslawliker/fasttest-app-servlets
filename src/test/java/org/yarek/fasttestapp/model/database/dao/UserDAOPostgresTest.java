@@ -6,6 +6,7 @@ import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.yarek.fasttestapp.model.Constants;
+import org.yarek.fasttestapp.model.database.LoaderSQL;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
@@ -54,7 +55,7 @@ class UserDAOPostgresTest {
     public void InitDatabase() throws SQLException {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        String sql = "CREATE TABLE users (id SERIAL PRIMARY KEY, username VARCHAR(50) UNIQUE NOT NULL, password VARCHAR(255) NOT NULL, ROLE VARCHAR(10) NOT NULL);";
+        String sql = LoaderSQL.load("create_users_table");
         stmt.executeUpdate(sql);
         stmt.close();
     }
