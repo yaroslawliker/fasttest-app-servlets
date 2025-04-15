@@ -9,7 +9,7 @@ public interface QuizDAO {
     List<QuizPreview> getTestPreviews();
     List<QuizPreview> getTestPreviews(int amount);
 
-    Quiz getTestById(String testId);
+    Quiz getQuizById(String quizId);
     void saveNewTest(Quiz quiz);
 
     void registerQuizPassed(String username, String quizId, float score);
