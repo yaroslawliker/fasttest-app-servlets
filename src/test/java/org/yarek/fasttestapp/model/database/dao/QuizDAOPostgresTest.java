@@ -65,26 +65,27 @@ class QuizDAOPostgresTest {
         sql = LoaderSQL.load("create_quiz_tables");
         stmt.executeUpdate(sql);
         stmt.close();
+
+        conn = dataSource.getConnection();
+        stmt = conn.createStatement();
+        sql = LoaderSQL.load("add_dumb_quizzes");
+        stmt.executeUpdate(sql);
+        stmt.close();
+        conn.close();
     }
 
     @AfterEach
     public void cleanUpDatabase() throws SQLException {
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        String sql = "DROP TABLE answers; DROP TABLE questions; DROP TABLE quizzes; DROP TABLE users";
+        String sql = "DROP TABLE answers; DROP TABLE questions; DROP TABLE quizzes; DROP TABLE users;";
         stmt.executeUpdate(sql);
         stmt.close();
+        conn.close();
     }
 
     @Test
     public void testGetQuizPreviews() throws SQLException {
-
-        // Prepare DB data
-        Connection conn = dataSource.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = LoaderSQL.load("add_dumb_quizzes");
-        stmt.executeUpdate(sql);
-        stmt.close();
 
         // Testing results
         QuizDAO quizDAO = new QuizDAOPostgres();
@@ -104,16 +105,10 @@ class QuizDAOPostgresTest {
     @Test
     public void testGetQuestById() throws SQLException {
         // Prepare DB data
-        // Insert user and quizzes
+        // Insert questions and answers
         Connection conn = dataSource.getConnection();
         Statement stmt = conn.createStatement();
-        String sql = LoaderSQL.load("add_dumb_quizzes");
-        stmt.executeUpdate(sql);
-        stmt.close();
-        // Insert questions and answers
-        conn = dataSource.getConnection();
-        stmt = conn.createStatement();
-        sql = LoaderSQL.load("add_dumb_questions_answers");
+        String sql = LoaderSQL.load("add_dumb_questions_answers");
         stmt.executeUpdate(sql);
         stmt.close();
 
@@ -179,6 +174,7 @@ class QuizDAOPostgresTest {
         originalQuiz.setName("My quiz");
         originalQuiz.setDescription("This is my quiz");
         originalQuiz.setCreationDate(Date.valueOf("2024-03-30"));
+        originalQuiz.setOwnerUsername("exampleuser1");
 
         Question question;
         Answer answer;
@@ -203,10 +199,59 @@ class QuizDAOPostgresTest {
 
         originalQuiz.getQuestions().add(question);
 
+        // Saving
+        String newID = quizDAO.saveNewQuiz(originalQuiz);
+        Quiz quizFromDB = quizDAO.getQuizById(newID);
 
-        quizDAO.saveNewQuiz(originalQuiz);
+        assertNotNull(quizFromDB);
+        assertEquals(newID, quizFromDB.getId());
+        assertEquals(originalQuiz.getName(), quizFromDB.getName());
+        assertEquals(originalQuiz.getDescription(), quizFromDB.getDescription());
+        assertEquals(originalQuiz.getCreationDate(), quizFromDB.getCreationDate());
 
-        Quiz quizFromDB = quizDAO.getQuizById("1");
+        assertEquals(originalQuiz.getQuestions().size(), quizFromDB.getQuestions().size());
+
+        // Questions
+
+        Question originalQuestion;
+        Question questionFromDB;
+        Answer originalAnswer;
+        Answer AnswerFromDB;
+
+        // Question 1
+        originalQuestion = originalQuiz.getQuestions().get(0);
+        questionFromDB = quizFromDB.getQuestions().get(0);
+        assertEquals(originalQuestion.getContent(), questionFromDB.getContent());
+        assertEquals(originalQuestion.getScore(), questionFromDB.getScore());
+        assertEquals(originalQuestion.getAnswers().size(), questionFromDB.getAnswers().size());
+        // Answer 1
+        originalAnswer = originalQuestion.getAnswers().get(0);
+        AnswerFromDB = questionFromDB.getAnswers().get(0);
+        assertEquals(originalAnswer.getContent(), AnswerFromDB.getContent());
+        assertEquals(originalAnswer.isCorrect(), AnswerFromDB.isCorrect());
+        // Answer 2
+        originalAnswer = originalQuestion.getAnswers().get(1);
+        AnswerFromDB = questionFromDB.getAnswers().get(1);
+        assertEquals(originalAnswer.getContent(), AnswerFromDB.getContent());
+        assertEquals(originalAnswer.isCorrect(), AnswerFromDB.isCorrect());
+
+        // Question 2
+        originalQuestion = originalQuiz.getQuestions().get(1);
+        questionFromDB = quizFromDB.getQuestions().get(1);
+        assertEquals(originalQuestion.getContent(), questionFromDB.getContent());
+        assertEquals(originalQuestion.getScore(), questionFromDB.getScore());
+        assertEquals(originalQuestion.getAnswers().size(), questionFromDB.getAnswers().size());
+        // Answer 1
+        originalAnswer = originalQuestion.getAnswers().get(0);
+        AnswerFromDB = questionFromDB.getAnswers().get(0);
+        assertEquals(originalAnswer.getContent(), AnswerFromDB.getContent());
+        assertEquals(originalAnswer.isCorrect(), AnswerFromDB.isCorrect());
+        // Answer 2
+        originalAnswer = originalQuestion.getAnswers().get(1);
+        AnswerFromDB = questionFromDB.getAnswers().get(1);
+        assertEquals(originalAnswer.getContent(), AnswerFromDB.getContent());
+        assertEquals(originalAnswer.isCorrect(), AnswerFromDB.isCorrect());
+
     }
 
 
