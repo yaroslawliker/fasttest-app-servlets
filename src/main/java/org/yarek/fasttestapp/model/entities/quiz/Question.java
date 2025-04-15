@@ -14,6 +14,12 @@ public class Question {
         answers = new ArrayList<Answer>();
     }
 
+    public Question(String content) {
+        this.content = content;
+        score = 1;
+        answers = new ArrayList<>();
+    }
+
     public Question(String content, float score) {
         this.content = content;
         this.score = score;
