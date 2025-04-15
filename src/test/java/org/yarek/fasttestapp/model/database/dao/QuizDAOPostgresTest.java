@@ -170,8 +170,44 @@ class QuizDAOPostgresTest {
         assertTrue(answer.isCorrect());
     }
 
+    @Test
+    public void testSaveQuiz() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres();
+
+        // Setting up quiz
+        Quiz originalQuiz = new Quiz();
+        originalQuiz.setName("My quiz");
+        originalQuiz.setDescription("This is my quiz");
+        originalQuiz.setCreationDate(Date.valueOf("2024-03-30"));
+
+        Question question;
+        Answer answer;
+
+        // Question 1
+        question = new Question("Is question1 correct?");
+        answer = new Answer("Is this answer right?1", true);
+        question.getAnswers().add(answer);
+        answer = new Answer("Is this answer right?2", false);
+        question.getAnswers().add(answer);
+
+        originalQuiz.getQuestions().add(question);
+
+        // Question 2
+        question = new Question("Is question2 correct?", 2.5f);
+        answer = new Answer("Is this answer right?1", true);
+        question.getAnswers().add(answer);
+        answer = new Answer("Is this answer right?2", false);
+        question.getAnswers().add(answer);
+        answer = new Answer("Is this answer right?3", true);
+        question.getAnswers().add(answer);
+
+        originalQuiz.getQuestions().add(question);
 
 
+        quizDAO.saveNewQuiz(originalQuiz);
+
+        Quiz quizFromDB = quizDAO.getQuizById("1");
+    }
 
 
 }

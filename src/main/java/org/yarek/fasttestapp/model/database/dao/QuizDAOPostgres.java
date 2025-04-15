@@ -152,7 +152,7 @@ public class QuizDAOPostgres implements QuizDAO {
     }
 
     @Override
-    public void saveNewQuiz(Quiz quiz) {
+    public String saveNewQuiz(Quiz quiz) {
         Connection connection = null;
         try {
             connection = dataSource.getConnection();
@@ -186,6 +186,8 @@ public class QuizDAOPostgres implements QuizDAO {
             // Commiting transaction
             connection.commit();
 
+            return String.valueOf(quizId);
+
         } catch (SQLException | RuntimeException e) {
             // Rolling back the transaction if something had failed
             try {
@@ -205,9 +207,6 @@ public class QuizDAOPostgres implements QuizDAO {
                 throw new RuntimeException(e);
             }
         }
-
-
-
     }
 
     private void saveQuestions(List<Question> questions, int quizId, Connection connection) throws SQLException {

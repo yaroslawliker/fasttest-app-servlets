@@ -10,7 +10,7 @@ public interface QuizDAO {
     List<QuizPreview> getQuizPreviews(int amount);
 
     Quiz getQuizById(String quizId);
-    void saveNewQuiz(Quiz quiz);
+    String saveNewQuiz(Quiz quiz);
 
     void registerQuizPassed(String username, String quizId, float score);
 }
