@@ -14,9 +14,9 @@ public class Question {
         answers = new ArrayList<Answer>();
     }
 
-    public Question(String content) {
+    public Question(String content, float score) {
         this.content = content;
-        score = 1;
+        this.score = score;
         answers = new ArrayList<>();
     }
 
