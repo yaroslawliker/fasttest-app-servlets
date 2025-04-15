@@ -136,7 +136,7 @@ public class QuizDAOPostgres implements QuizDAO {
         try (Connection connection = dataSource.getConnection();
             PreparedStatement questionStatement = connection.prepareStatement("SELECT content, is_correct FROM answers WHERE question = ?");
         ) {
-            questionStatement.setString(1, questionId);
+            questionStatement.setInt(1, Integer.parseInt(questionId));
             ResultSet questionRs = questionStatement.executeQuery();
             List<Answer> answers = new ArrayList<>();
             while (questionRs.next()) {
