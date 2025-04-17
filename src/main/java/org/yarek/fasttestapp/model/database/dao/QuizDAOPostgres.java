@@ -1,6 +1,7 @@
 package org.yarek.fasttestapp.model.database.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.validation.constraints.NotNull;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
@@ -13,11 +14,11 @@ import java.util.List;
 
 public class QuizDAOPostgres implements QuizDAO {
 
-    private static HikariDataSource dataSource;
+    private HikariDataSource dataSource;
     private final int deafultPreviewAmount = 10;
 
-    public static void setDataSource(HikariDataSource dataSource) {
-        QuizDAOPostgres.dataSource = dataSource;
+    public QuizDAOPostgres(@NotNull HikariDataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override

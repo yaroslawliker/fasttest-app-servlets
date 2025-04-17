@@ -46,8 +46,6 @@ class QuizDAOPostgresTest {
         if (!Objects.equals(dataSource.getSchema(), "test")) {
             throw new TestInstantiationException("FORGOT TO MENTION SCHEMA test!!!");
         }
-
-        QuizDAOPostgres.setDataSource(dataSource);
     }
 
     @BeforeEach
@@ -81,7 +79,7 @@ class QuizDAOPostgresTest {
     public void testGetQuizPreviews() throws SQLException {
 
         // Testing results
-        QuizDAO quizDAO = new QuizDAOPostgres();
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
         List<QuizPreview> previews = quizDAO.getQuizPreviews(2);
 
         assertEquals(2, previews.size());
@@ -105,7 +103,7 @@ class QuizDAOPostgresTest {
         stmt.executeUpdate(sql);
         stmt.close();
 
-        QuizDAO quizDAO = new QuizDAOPostgres();
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
         Quiz quiz = quizDAO.getQuizById("1");
         assertNotNull(quiz);
         assertEquals("1", quiz.getId());
@@ -160,7 +158,7 @@ class QuizDAOPostgresTest {
 
     @Test
     public void testSaveQuiz() throws SQLException {
-        QuizDAO quizDAO = new QuizDAOPostgres();
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
 
         // Setting up quiz
         Quiz originalQuiz = new Quiz();
@@ -249,7 +247,7 @@ class QuizDAOPostgresTest {
 
     @Test
     public void testRegisterQuizPassed() throws SQLException {
-        QuizDAO quizDAO = new QuizDAOPostgres();
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
 
         quizDAO.registerQuizPassed("exampleuser1", "1", 3);
 
