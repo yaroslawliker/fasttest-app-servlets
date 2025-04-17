@@ -1,7 +1,7 @@
 package org.yarek.fasttestapp.devscripts;
 
-import org.postgresql.jdbc.PgConnection;
 import org.yarek.fasttestapp.model.Constants;
+import org.yarek.fasttestapp.model.database.LoaderSQL;
 
 import java.sql.*;
 
@@ -10,9 +10,15 @@ public class PostgresScripts {
 
         try {
             String param0 = args[0];
+            String schema;
             switch (param0) {
-                case "clearTestSchema":
-                    clearTestSchema();
+                case "dropTables":
+                    schema = args[1];
+                    dropTables(schema);
+                    break;
+                case "initTables":
+                    schema = args[1];
+                    initTables(schema);
                     break;
                 default:
                     throw new IllegalArgumentException("Unknown parameter: " + param0);
@@ -23,7 +29,29 @@ public class PostgresScripts {
         }
     }
 
-    public static void clearTestSchema() {
+    public static void initTables(String schema) {
+        try (Connection connection =
+                     DriverManager.getConnection(
+                             Constants.DATABASE_URL,
+                             Constants.DATABASE_USER,
+                             Constants.DATABASE_PASSWORD)) {
+
+            String createUsersSQL = LoaderSQL.load("create_users_table");
+            PreparedStatement ps = connection.prepareStatement(createUsersSQL);
+            ps.executeUpdate();
+            ps.close();
+
+            String createQuizSQL = LoaderSQL.load("create_quiz_tables");
+            ps = connection.prepareStatement(createQuizSQL);
+            ps.executeUpdate();
+            ps.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void dropTables(String schema) {
         try (Connection connection = 
                      DriverManager.getConnection(
                              Constants.DATABASE_URL, 
@@ -31,11 +59,11 @@ public class PostgresScripts {
                              Constants.DATABASE_PASSWORD)) {
             
             Statement stmt = connection.createStatement();
-            String sql = "DROP TABLE IF EXISTS test.";
+            String sql = "DROP TABLE IF EXISTS ";
 
             for (String table : new String[] { "results", "answers", "questions", "quizzes", "users" }) {
 
-                stmt.addBatch(sql+table+";");
+                stmt.addBatch(sql + schema + '.' + table + ";");
             }
             stmt.executeBatch();
             stmt.close();
