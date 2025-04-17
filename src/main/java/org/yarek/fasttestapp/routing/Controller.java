@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.yarek.fasttestapp.routing.handlers.HttpHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.HomeHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.LoginHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.SignupHandler;
 
 import java.io.IOException;
 import java.util.ArrayList;
@@ -33,6 +34,9 @@ public class Controller extends HttpServlet {
 
         // Login handler
         handlers.add(new LoginHandler());
+
+        // Sighup handler
+        handlers.add(new SignupHandler());
     }
 
     @Override
