@@ -75,11 +75,13 @@
             <c:if test="${username != null}">
                 <span>👤 ${username}</span>
                 <a href="/logout">
+                    Log out
                 </a>
             </c:if>
 
             <c:if test="${username == null}">
-                <a href="/login">Login</a>
+                <a href="/login">Log in</a>
+                <a href="/register">Sign up</a>
             </c:if>
         </div>
     </div>
