@@ -44,7 +44,7 @@ public class SignupHandler extends HttpHandlerBase {
                 return "signup";
             }
 
-            return "home";
+            return "index";
         } else {
             return "signup";
         }
