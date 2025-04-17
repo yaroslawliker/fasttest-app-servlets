@@ -8,6 +8,7 @@ import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.TestInstantiationException;
 import org.junit.jupiter.api.parallel.Execution;
 import org.junit.jupiter.api.parallel.ExecutionMode;
+import org.yarek.fasttestapp.devscripts.PostgresScripts;
 import org.yarek.fasttestapp.model.Constants;
 import org.yarek.fasttestapp.model.database.LoaderSQL;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
@@ -15,10 +16,7 @@ import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
 import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
 
-import java.sql.Connection;
-import java.sql.Date;
-import java.sql.SQLException;
-import java.sql.Statement;
+import java.sql.*;
 import java.util.List;
 import java.util.Objects;
 
@@ -68,7 +66,7 @@ class QuizDAOPostgresTest {
 
         conn = dataSource.getConnection();
         stmt = conn.createStatement();
-        sql = LoaderSQL.load("add_dumb_quizzes");
+        sql = LoaderSQL.load("add_dumb_users_quizzes");
         stmt.executeUpdate(sql);
         stmt.close();
         conn.close();
@@ -76,12 +74,7 @@ class QuizDAOPostgresTest {
 
     @AfterEach
     public void cleanUpDatabase() throws SQLException {
-        Connection conn = dataSource.getConnection();
-        Statement stmt = conn.createStatement();
-        String sql = "DROP TABLE answers; DROP TABLE questions; DROP TABLE quizzes; DROP TABLE users;";
-        stmt.executeUpdate(sql);
-        stmt.close();
-        conn.close();
+        PostgresScripts.clearTestSchema();
     }
 
     @Test
@@ -254,5 +247,22 @@ class QuizDAOPostgresTest {
 
     }
 
+    @Test
+    public void testRegisterQuizPassed() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres();
 
+        quizDAO.registerQuizPassed("exampleuser1", "1", 3);
+
+        Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM results");
+        assertTrue(resultSet.next());
+
+        int userId = resultSet.getInt("user_id");
+        String username = ((QuizDAOPostgres) quizDAO).getOwner(String.valueOf(userId));
+
+        assertEquals("exampleuser1", username);
+        assertEquals(1, resultSet.getInt("id"));
+        assertEquals(3, resultSet.getInt("score"));
+    }
 }

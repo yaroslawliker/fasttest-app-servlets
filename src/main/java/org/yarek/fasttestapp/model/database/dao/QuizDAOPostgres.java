@@ -255,7 +255,7 @@ public class QuizDAOPostgres implements QuizDAO {
 
             int userId = Integer.parseInt(getOwnerId(username));
 
-            String sql = "INSERT INTO results (score, user, quiz) VALUES (?, ?, ?);";
+            String sql = "INSERT INTO results (score, user_id, quiz) VALUES (?, ?, ?);";
 
             PreparedStatement statement = connection.prepareStatement(sql);
             statement.setFloat(1, score);
@@ -269,7 +269,7 @@ public class QuizDAOPostgres implements QuizDAO {
         }
     }
 
-    private String getOwner(String ownerId) {
+    public String getOwner(String ownerId) {
         String username;
 
         try (Connection connection = dataSource.getConnection();
@@ -289,7 +289,7 @@ public class QuizDAOPostgres implements QuizDAO {
         return username;
     }
 
-    private String getOwnerId(String username) {
+    public String getOwnerId(String username) {
         String ownerId;
         try (Connection connection = dataSource.getConnection();
              PreparedStatement userStatement = connection.prepareStatement("SELECT id FROM users WHERE username = ?");
