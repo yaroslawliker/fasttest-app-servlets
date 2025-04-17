@@ -7,6 +7,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
 public abstract class HttpHandlerBase implements HttpHandler {
     List<String> pathList;
@@ -38,42 +39,40 @@ public abstract class HttpHandlerBase implements HttpHandler {
 
     /**
      * Mapping request method to appropriate class methods.
+     *
+     * @return view name
      */
     @Override
-    public void handle(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    public String handle(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         String method = req.getMethod();
         switch (method) {
             case "GET":
-                doGet(req, resp);
-                break;
+                return doGet(req, resp, model);
             case "POST":
-                doPost(req, resp);
-                break;
+                return doPost(req, resp, model);
             case "UPDATE":
-                doUpdate(req, resp);
-                break;
+                return doUpdate(req, resp, model);
             case "DELETE":
-                doDelete(req, resp);
-                break;
+                return doDelete(req, resp, model);
 
             default:
                 throw new ServletException("Unsupported HTTP method: " + method + ". Add it into HttpHandlerBase class");
         }
     }
 
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         throw new ServletException("GET not implemented yet");
     }
 
-    protected void doPost(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected String doPost(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         throw new ServletException("POST not implemented yet");
     }
 
-    protected void doUpdate(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected String doUpdate(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         throw new ServletException("UPDATE not implemented yet");
     }
 
-    protected void doDelete(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
+    protected String doDelete(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         throw new ServletException("UPDATE not implemented yet");
     }
 

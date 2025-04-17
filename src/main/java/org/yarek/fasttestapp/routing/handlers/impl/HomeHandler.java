@@ -6,6 +6,7 @@ import jakarta.servlet.http.HttpServletResponse;
 import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
+import java.util.Map;
 
 public class HomeHandler extends HttpHandlerBase {
 
@@ -15,7 +16,7 @@ public class HomeHandler extends HttpHandlerBase {
     }
 
     @Override
-    protected void doGet(HttpServletRequest req, HttpServletResponse resp) throws ServletException, IOException {
-        req.getRequestDispatcher("WEB-INF/views/index.jsp").forward(req, resp);
+    protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
+        return "index";
     }
 }
