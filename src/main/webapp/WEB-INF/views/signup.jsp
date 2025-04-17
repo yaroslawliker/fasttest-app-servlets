@@ -102,6 +102,10 @@
         const confirm = document.getElementById("confirmPassword").value;
         const error = document.getElementById("error-message");
 
+        while (error.hasChildNodes()) {
+            error.removeChild(error.firstChild);
+        }
+
         if (username.length < 5) {
             addErrorMsg(error, "User name must be at least 5 symbols!")
         }
@@ -115,6 +119,7 @@
         }
 
         if (error.children.length !== 0) {
+
             error.style.display = "block";
             return false;
         }
