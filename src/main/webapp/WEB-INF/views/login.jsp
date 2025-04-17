@@ -71,6 +71,7 @@
     </style>
 </head>
 <body>
+<%@ include file="elements/navbar.jsp"%>
 <div class="login-container">
     <h2>Login</h2>
     <form action="login.jsp" method="POST">
