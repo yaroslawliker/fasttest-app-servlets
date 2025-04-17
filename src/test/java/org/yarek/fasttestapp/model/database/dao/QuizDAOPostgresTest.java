@@ -72,7 +72,7 @@ class QuizDAOPostgresTest {
 
     @AfterEach
     public void cleanUpDatabase() throws SQLException {
-        PostgresScripts.clearTestSchema();
+        PostgresScripts.dropTables("test");
     }
 
     @Test
