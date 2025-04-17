@@ -1,15 +1,25 @@
 Here are stored questions about app design to aks the teacher or other experienced programmers.
 
 
-Was the Model in addition to DAO so bad?
-    See docs/decisions/few-DAO-instead-of-Model-interface.txt
+Questions:
 
-How docs are stored? Is there some types of things to document?
-How should I keep is glossary?
-How should I keep some notes and ideas?
+    Is it ok to make DAO hikari data source variable static, to setting up
+DAO instances every time? Why not make all methods static?
 
-Does QuizDAO violates SRP?
-Does quiz blank violated OCP?
+    Is it OK to use direct DB interactions in tests?
+
+    Is it OK to make one DAO depend on another DAO?
+
+Answered:
+    Was the Model in addition to DAO so bad?
+        See docs/decisions/few-DAO-instead-of-Model-interface.txt
+
+    How docs are stored? Is there some types of things to document?
+    How should I keep is glossary?
+    How should I keep some notes and ideas?
+
+    Does QuizDAO violates SRP?
+    Does quiz blank violated OCP?
 
 
 
