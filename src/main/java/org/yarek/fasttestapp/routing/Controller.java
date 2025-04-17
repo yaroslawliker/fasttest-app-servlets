@@ -27,11 +27,12 @@ public class Controller extends HttpServlet {
 
     protected void registerHandlers() {
         handlers = new ArrayList<>();
-        HttpHandler httpHandler;
 
         // Home handler
-        httpHandler = new HomeHandler();
-        handlers.add(httpHandler);
+        handlers.add(new HomeHandler());
+
+        // Login handler
+        handlers.add(new LoginHandler());
     }
 
     @Override
