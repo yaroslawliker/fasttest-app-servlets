@@ -32,7 +32,7 @@ public class Controller extends HttpServlet {
     @Override
     public void init() throws ServletException {
         setUpHikariDataSource();
-
+        initDAOs();
         registerHandlers();
     }
 
@@ -48,8 +48,6 @@ public class Controller extends HttpServlet {
 
     private void initDAOs() {
         userDAO = new UserDAOPostgres(dataSource);
-
-
     }
 
     protected void registerHandlers() {
