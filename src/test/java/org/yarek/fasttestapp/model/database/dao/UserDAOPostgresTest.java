@@ -46,9 +46,6 @@ class UserDAOPostgresTest {
         if (!Objects.equals(dataSource.getSchema(), "test")) {
             throw new TestInstantiationException("FORGOT TO MENTION SCHEMA test!!!");
         }
-
-        UserDAOPostgres.setDataSource(dataSource);
-
     }
 
     @BeforeEach
@@ -85,7 +82,7 @@ class UserDAOPostgresTest {
         stmt.executeUpdate();
         stmt.close();
 
-        UserDAO userDAO = new UserDAOPostgres();
+        UserDAO userDAO = new UserDAOPostgres(dataSource);
 
         User user = userDAO.getUser("exampleUser123");
         assertEquals("exampleUser123", user.getUsername());
@@ -95,7 +92,7 @@ class UserDAOPostgresTest {
 
     @Test
     void testGetNonExistingUser() throws SQLException {
-        UserDAO userDAO = new UserDAOPostgres();
+        UserDAO userDAO = new UserDAOPostgres(dataSource);
         User user = userDAO.getUser("noExistingUser");
         assertNull(user);
     }
@@ -103,7 +100,7 @@ class UserDAOPostgresTest {
     @Test
     void registerUserTest() throws SQLException {
         User user = new User("cooluser123", "myC00lPassword", User.Role.USER);
-        UserDAO userDAO = new UserDAOPostgres();
+        UserDAO userDAO = new UserDAOPostgres(dataSource);
 
         userDAO.registerUser(user);
 
@@ -117,7 +114,7 @@ class UserDAOPostgresTest {
     @Test
     void testRegisterSameUsername() throws SQLException {
         User user = new User("cooluser123", "myC00lPassword", User.Role.USER);
-        UserDAO userDAO = new UserDAOPostgres();
+        UserDAO userDAO = new UserDAOPostgres(dataSource);
 
         User sameUsername = new User("cooluser123", "anotherPassword", User.Role.USER);
 

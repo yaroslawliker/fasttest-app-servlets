@@ -2,6 +2,7 @@ package org.yarek.fasttestapp.model.database.dao;
 
 import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
+import jakarta.validation.constraints.NotNull;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
@@ -9,10 +10,18 @@ import java.sql.*;
 
 public class UserDAOPostgres implements UserDAO {
 
-    private static HikariDataSource dataSource;
+    public HikariDataSource getDataSource() {
+        return dataSource;
+    }
 
-    public static void setDataSource(HikariDataSource dataSource) {
-        UserDAOPostgres.dataSource = dataSource;
+    public void setDataSource(@NotNull HikariDataSource dataSource) {
+        this.dataSource = dataSource;
+    }
+
+    private HikariDataSource dataSource;
+
+    public UserDAOPostgres(HikariDataSource dataSource) {
+        this.dataSource = dataSource;
     }
 
     @Override
@@ -75,8 +84,6 @@ public class UserDAOPostgres implements UserDAO {
             } else {
                 return null;
             }
-
-
 
         } catch (SQLException e) {
             throw new RuntimeException("Error with database", e);
