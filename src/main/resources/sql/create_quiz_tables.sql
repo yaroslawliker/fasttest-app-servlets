@@ -19,3 +19,10 @@ CREATE TABLE answers (
     is_correct bool,
     question integer REFERENCES questions(id)
 );
+
+CREATE TABLE results (
+    id serial PRIMARY KEY,
+    score numeric,
+    user integer REFERENCES users(id),
+    quiz integer REFERENCES quizzes(id)
+);

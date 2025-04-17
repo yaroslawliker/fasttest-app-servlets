@@ -251,7 +251,22 @@ public class QuizDAOPostgres implements QuizDAO {
 
     @Override
     public void registerQuizPassed(String username, String quizId, float score) {
+        try( Connection connection = dataSource.getConnection(); ) {
 
+            int userId = Integer.parseInt(getOwnerId(username));
+
+            String sql = "INSERT INTO results (score, user, quiz) VALUES (?, ?, ?);";
+
+            PreparedStatement statement = connection.prepareStatement(sql);
+            statement.setFloat(1, score);
+            statement.setInt(2, userId);
+            statement.setInt(3, Integer.parseInt(quizId));
+            statement.executeUpdate();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
     }
 
     private String getOwner(String ownerId) {
