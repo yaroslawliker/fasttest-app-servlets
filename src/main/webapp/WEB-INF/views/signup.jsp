@@ -1,3 +1,4 @@
+<%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <html>
 <head>
@@ -81,7 +82,11 @@
         <label for="confirmPassword">Confirm Password</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required />
 
-        <ul class="error" id="error-message"></ul>
+        <ul class="error" id="error-message">
+            <c:if test="${userExistsError}">
+                <li>This username is already taken.</li>
+            </c:if>
+        </ul>
 
         <input type="submit" value="Sign Up" />
     </form>
@@ -89,18 +94,21 @@
 
 <script>
 
+    const error = document.getElementById("error-message")
+    if (error.children.length > 0) {
+        error.style.display = "block";
+    }
+
     function addErrorMsg(error, text) {
         const msg = document.createElement("li");
         msg.textContent = text;
         error.append(msg);
-
     }
 
     function validateForm() {
         const username = document.getElementById("username").value;
         const pass = document.getElementById("password").value;
         const confirm = document.getElementById("confirmPassword").value;
-        const error = document.getElementById("error-message");
 
         while (error.hasChildNodes()) {
             error.removeChild(error.firstChild);
