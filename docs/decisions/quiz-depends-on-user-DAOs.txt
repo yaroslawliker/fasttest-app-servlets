@@ -1,0 +1,14 @@
+UserDAO works with username, password and role.
+QuizDAO works with quizID, username and quiz data.
+
+In Postgres table username in addition has users.id field.
+Table quizzes has an owner_id field (references users.id field).
+
+# Problem
+    How to organize mapping user_id <-> username?
+    Moving it to UserDAO will result in "realization comes through interface"
+problem, because UserDAO originally don't know about users_id.
+    Moving it into UserDAOPostgres as non-override method will result in
+QuizPostgresDAO depends on realization UserDAOPostgres, so it will be difficult
+to move users into other db (say Mongo) if needed.
+    Moving in to QuizDAOPostgres will lead to the same problem.
