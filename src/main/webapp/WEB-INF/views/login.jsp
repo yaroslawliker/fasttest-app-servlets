@@ -68,13 +68,19 @@
         input[type="submit"]:hover {
             background-color: #357abd;
         }
+
+        .error {
+            color: red;
+            font-size: 13px;
+            margin-bottom: 10px;
+        }
     </style>
 </head>
 <body>
 <%@ include file="elements/navbar.jsp"%>
 <div class="login-container">
     <h2>Login</h2>
-    <form action="login.jsp" method="POST">
+    <form action="/login" method="POST">
         <label for="username">Username:</label>
         <input type="text" id="username" name="username" required>
 
@@ -82,6 +88,12 @@
         <input type="password" id="password" name="password" required>
 
         <input type="submit" value="Login">
+
+        <c:if test="${notAuthenticatedError}">
+            <div class="error" id="error-message">
+                Wrong login or password.
+            </div>
+        </c:if>
     </form>
 </div>
 </body>

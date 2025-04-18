@@ -57,7 +57,7 @@ public class Controller extends HttpServlet {
         handlers.add(new HomeHandler());
 
         // Login handler
-        handlers.add(new LoginHandler());
+        handlers.add(new LoginHandler(userDAO));
 
         // Sighup handler
         handlers.add(new SignupHandler(userDAO));
@@ -80,7 +80,7 @@ public class Controller extends HttpServlet {
                 // Check if the view is as redirect
                 if (view.endsWith("@redirect")) {
                     view = view.substring(0, view.lastIndexOf("@redirect"));
-                    resp.sendRedirect(view);
+                    resp.sendRedirect("/" + view);
                 } else {
                     req.getRequestDispatcher(String.format("WEB-INF/views/%s.jsp", view)).forward(req, resp);
                 }
