@@ -3,6 +3,7 @@ QuizDAO works with quizID, username and quiz data.
 
 In Postgres table username in addition has users.id field.
 Table quizzes has an owner_id field (references users.id field).
+Table results has same problem.
 
 # Problem
     How to organize mapping user_id <-> username?
@@ -12,3 +13,26 @@ problem, because UserDAO originally don't know about users_id.
 QuizPostgresDAO depends on realization UserDAOPostgres, so it will be difficult
 to move users into other db (say Mongo) if needed.
     Moving in to QuizDAOPostgres will lead to the same problem.
+
+# Possible options
+    1) Make quizzes and results reference users by username. Will lead to more db memory usage.
+        Average quiz + questions + answers is (100*3+200)*7+100*200 = 3800 bytes per quiz.
+    It's passed in average by 20 users. ID takes 2 bytes, username ~25 bytes.
+        If we use ID, we spend 3800 + 2 + 2*20 = 3842 bytes per quiz.
+        If we use username, we spend 3800 + 2 + 25*20 = 4552 bytes per quiz.
+        4552/3842 - 1 = 18%.
+        The decision of using usernames instead of IDs increases DB usage for 18%.
+        The question is: is it much?
+
+    2) Let user id appear in the application out of DB layer (by moving it to UserDAO
+or making Quiz containing owner_id instead of username).
+        User id can be considered a part of application-level business rules. Any DB
+    realization of UserDAO (relational, no-sql) will likely contain user_id.
+        So moving id out of the DB realization layer is not a problem of "realization
+    breaks through implementation", it's a problem of wrong UserDAO design.
+        This solution is applicable.
+
+    3) Move mapping into UserDAOPostgres, making QuizPostgresPostgres rely on it.
+        In this situation flexibility of the system decreases. In the other hand,
+    in postgres quizzes and users are in fact connected. If we move users to other DB
+    future, we anyway probably change something in QuizDAOPostgres anyway.
