@@ -40,8 +40,7 @@ public class SignupHandler extends HttpHandlerBase {
             try {
                 userDAO.registerUser(newUser);
             } catch (UsernameAlreadyExistsException e) {
-                resp.getWriter().write("Username already exists!");
-                req.setAttribute("userExistsError", true);
+                model.put("userExistsError", true);
                 return "signup";
             }
 

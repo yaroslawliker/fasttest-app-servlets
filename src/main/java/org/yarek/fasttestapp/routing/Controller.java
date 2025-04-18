@@ -72,9 +72,18 @@ public class Controller extends HttpServlet {
 
         for (HttpHandler handler : handlers) {
             if (handler.isProcessingPath(path)) {
+                // Delegate work to the handler
                 String view = handler.handle(req, resp, model);
+                // Put model objects to as attributes
                 mapModelToRequest(model, req);
-                req.getRequestDispatcher(String.format("WEB-INF/views/%s.jsp", view)).forward(req, resp);
+
+                // Check if the view is as redirect
+                if (view.endsWith("@redirect")) {
+                    view = view.substring(0, view.lastIndexOf("@redirect"));
+                    resp.sendRedirect(view);
+                } else {
+                    req.getRequestDispatcher(String.format("WEB-INF/views/%s.jsp", view)).forward(req, resp);
+                }
                 break;
             }
         }
