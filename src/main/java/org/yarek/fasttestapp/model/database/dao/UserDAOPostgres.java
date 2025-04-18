@@ -1,6 +1,5 @@
 package org.yarek.fasttestapp.model.database.dao;
 
-import com.zaxxer.hikari.HikariConfig;
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.validation.constraints.NotNull;
 import org.yarek.fasttestapp.model.entities.User;
@@ -88,5 +87,26 @@ public class UserDAOPostgres implements UserDAO {
         } catch (SQLException e) {
             throw new RuntimeException("Error with database", e);
         }
+    }
+
+    @Override
+    public String getUsernameByID(String userID) {
+        String username;
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement userStatement = connection.prepareStatement("SELECT username FROM users WHERE id = ?"); ) {
+
+            userStatement.setInt(1, Integer.parseInt(userID));
+            ResultSet userRs = userStatement.executeQuery();
+            if (userRs.next()) {
+                username = userRs.getString("username");
+            } else {
+                throw new RuntimeException("No user for the quiz. user id: " + userID);
+            }
+            userRs.close();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+        return username;
     }
 }

@@ -36,3 +36,9 @@ or making Quiz containing owner_id instead of username).
         In this situation flexibility of the system decreases. In the other hand,
     in postgres quizzes and users are in fact connected. If we move users to other DB
     future, we anyway probably change something in QuizDAOPostgres anyway.
+
+# Solution
+    2) Now classes Quiz, QuizPreview contain field owner_id ect instead of username.
+    UserDAO now has method getUsernameByID.
+    It is easy to implement, it keeps system flexible (described above problems are
+    not so important).

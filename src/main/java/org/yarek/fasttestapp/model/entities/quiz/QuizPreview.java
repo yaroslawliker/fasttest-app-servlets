@@ -5,14 +5,14 @@ import java.util.Date;
 public class QuizPreview {
 
     private final String id;
-    private final String ownerUsername;
+    private final String ownerID;
     private final String name;
     private final String description;
     private final Date creationDate;
 
-    public QuizPreview(String id, String ownerUsername, String name, String description, Date creationDate) {
+    public QuizPreview(String id, String ownerID, String name, String description, Date creationDate) {
         this.id = id;
-        this.ownerUsername = ownerUsername;
+        this.ownerID = ownerID;
         this.name = name;
         this.description = description;
         this.creationDate = creationDate;
@@ -21,8 +21,8 @@ public class QuizPreview {
     public String getId() {
         return id;
     }
-    public String getOwnerUsername() {
-        return ownerUsername;
+    public String getOwnerID() {
+        return ownerID;
     }
     public String getName() {
         return name;

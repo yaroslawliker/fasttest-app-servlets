@@ -9,4 +9,5 @@ public interface UserDAO {
      */
     void registerUser(User user) throws UsernameAlreadyExistsException;
     User getUser(String username);
+    String getUsernameByID(String userID);
 }

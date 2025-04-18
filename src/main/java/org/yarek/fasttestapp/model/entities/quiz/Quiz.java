@@ -12,7 +12,7 @@ import java.util.List;
 public class Quiz {
 
     private String id;
-    private String ownerUsername;
+    private String ownerID;
     private String name;
     private String description;
     private Date creationDate;
@@ -21,7 +21,7 @@ public class Quiz {
 
     public Quiz() {
         id = null;
-        ownerUsername = null;
+        ownerID = null;
 
         name = "Quiz";
         description = "Quiz description";
@@ -32,8 +32,8 @@ public class Quiz {
     public String getId() { return id; }
     public void setId(String id) { this.id = id; }
 
-    public String getOwnerUsername() { return ownerUsername; }
-    public void setOwnerUsername(String ownerUsername) { this.ownerUsername = ownerUsername; }
+    public String getOwnerID() { return ownerID; }
+    public void setOwnerID(String ownerID) { this.ownerID = ownerID; }
 
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
@@ -53,7 +53,7 @@ public class Quiz {
      * Checks if quiz is a representation of real saved in DB instance
      */
     boolean isMappedToDatabase() {
-        return id != null && ownerUsername != null;
+        return id != null && ownerID != null;
     }
 
 }

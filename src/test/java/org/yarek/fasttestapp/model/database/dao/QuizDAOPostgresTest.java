@@ -165,7 +165,7 @@ class QuizDAOPostgresTest {
         originalQuiz.setName("My quiz");
         originalQuiz.setDescription("This is my quiz");
         originalQuiz.setCreationDate(Date.valueOf("2024-03-30"));
-        originalQuiz.setOwnerUsername("exampleuser1");
+        originalQuiz.setOwnerID("1");
 
         Question question;
         Answer answer;
@@ -249,17 +249,14 @@ class QuizDAOPostgresTest {
     public void testRegisterQuizPassed() throws SQLException {
         QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
 
-        quizDAO.registerQuizPassed("exampleuser1", "1", 3);
+        quizDAO.registerQuizPassed("1", "1", 3);
 
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
         ResultSet resultSet = statement.executeQuery("SELECT * FROM results");
         assertTrue(resultSet.next());
 
-        int userId = resultSet.getInt("user_id");
-        String username = ((QuizDAOPostgres) quizDAO).getOwner(String.valueOf(userId));
-
-        assertEquals("exampleuser1", username);
+        assertEquals(1, resultSet.getInt("user_id"));
         assertEquals(1, resultSet.getInt("id"));
         assertEquals(3, resultSet.getInt("score"));
     }
