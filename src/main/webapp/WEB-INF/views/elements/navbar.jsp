@@ -62,24 +62,25 @@
             <a href="/home">Home</a>
             <a href="/tests">Tests</a>
 
-            <c:if test = "${role == 'teacher'}">
+            <c:if test = "${sessionScope.user.role.name() == 'TEACHER'}">
                 <a href="/my-tests">My tests</a>
             </c:if>
 
-            <c:if test="${role == 'user'}">
+            <c:if test="${sessionScope.user.role.name() == 'USER'}">
                 <a href="/passed-tests">Passed tests</a>
             </c:if>
+
         </div>
 
         <div class="nav-auth">
-            <c:if test="${username != null}">
-                <span>👤 ${username}</span>
+            <c:if test="${sessionScope.user != null}">
+                <span>${sessionScope.user.username}</span>
                 <a href="/logout">
                     Log out
                 </a>
             </c:if>
 
-            <c:if test="${username == null}">
+            <c:if test="${sessionScope.user == null}">
                 <a href="/login">Log in</a>
                 <a href="/register">Sign up</a>
             </c:if>
