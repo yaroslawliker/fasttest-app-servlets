@@ -33,6 +33,10 @@
             margin-bottom: 6px;
             color: #555;
         }
+        label.radiolabel {
+            display: inline;
+            color: #555;
+        }
 
         input[type="text"],
         input[type="password"] {
@@ -81,6 +85,13 @@
 
         <label for="confirmPassword">Confirm Password</label>
         <input type="password" id="confirmPassword" name="confirmPassword" required />
+
+        <label>Choose your role:</label>
+        <input type="radio" id="user" name="role" value="user" checked>
+        <label for="user" class="radiolabel">Student</label>
+        <br>
+        <input type="radio" id="teacher" name="role" value="teacher">
+        <label for="teacher" class="radiolabel">Teacher</label>
 
         <ul class="error" id="error-message">
             <c:if test="${userExistsError}">

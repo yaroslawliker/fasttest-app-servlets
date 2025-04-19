@@ -32,10 +32,17 @@ public class SignupHandler extends HttpHandlerBase {
         String username = req.getParameter("username");
         String password = req.getParameter("password");
         String confirmPassword = req.getParameter("confirmPassword");
+        String roleStr = req.getParameter("role");
 
-        if (isUsernameValid(username) && isPasswordValid(password, confirmPassword)) {
+        if (username == null || password == null || confirmPassword == null) {
+            return "wrong_req";
+        }
 
-            User newUser = new User(username, password, User.Role.USER);
+        User.Role role = mapRole(roleStr);
+
+        if (isUsernameValid(username) && isPasswordValid(password, confirmPassword) && role != null) {
+
+            User newUser = new User(username, password, role);
 
             try {
                 userDAO.registerUser(newUser);
@@ -46,18 +53,26 @@ public class SignupHandler extends HttpHandlerBase {
 
             return "index@redirect";
         } else {
-            return "signup";
+            return "wrong_req";
         }
     }
 
     private boolean isUsernameValid(String username) {
-        return !(username == null || username.length() < 5 || username.length() > 20);
+        return username.length() >= 5 && username.length() <= 20;
     }
 
     private boolean isPasswordValid(String password, String confirmPassword) {
-        if (password == null || confirmPassword == null || password.length() < 6 || password.length() > 20) {
+        if (confirmPassword == null || password.length() < 6 || password.length() > 20) {
             return false;
         }
         return password.equals(confirmPassword);
+    }
+
+    private User.Role mapRole(String roleStr) {
+        return switch (roleStr) {
+            case "user" -> User.Role.USER;
+            case "teacher" -> User.Role.TEACHER;
+            default -> null;
+        };
     }
 }
