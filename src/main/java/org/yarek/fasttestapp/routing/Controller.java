@@ -10,6 +10,7 @@ import org.yarek.fasttestapp.model.Constants;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAOPostgres;
 import org.yarek.fasttestapp.routing.handlers.HttpHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.CreateQuizHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.HomeHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.LoginHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.SignupHandler;
@@ -61,6 +62,9 @@ public class Controller extends HttpServlet {
 
         // Sighup handler
         handlers.add(new SignupHandler(userDAO));
+
+        // Create quiz handler
+        handlers.add(new CreateQuizHandler());
     }
 
     @Override
