@@ -11,16 +11,21 @@
     <title>Create</title>
 
   <style>
+    * {
+      color: #3d3d3d;
+    }
+
     body {
       font-family: Arial, sans-serif;
       background: #f0f2f5;
       display: flex;
-      align-items: center;
+      align-items: flex-start;
       justify-content: center;
       margin: 0;
       overflow: auto;
     }
     .create-form {
+      min-width: 650px;
       background-color: #fff;
       margin-top: 20px;
       padding: 40px 30px;
@@ -33,10 +38,20 @@
     }
     input, textarea {
       border-radius: 10px;
+      color: #313131;
     }
     button {
       border-radius: 20px;
       background-color: #8eb6e7;
+      border-width: 0px;
+      box-shadow: rgba(0, 0, 0, .2) 0 4px 4px 0;
+      font-weight: lighter;
+      padding: 5px 15px;
+    }
+    .submit-btn {
+      width: fit-content;
+      padding: 20px;
+      background-color: #73e763;
     }
     .create-form > div {
       display: flex;
@@ -59,6 +74,19 @@
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
       row-gap: 10px;
     }
+    .question-label {
+      color: #6e6e6e;
+      font-size: 16px;
+    }
+    .question-text {
+      border-width: 0;
+      border-bottom-width: 1px;
+      background-color: rgba(0, 0, 0, 0);
+    }
+    .add-question-btn {
+      width: 50%;
+      align-self: center;
+    }
     .answers-container {
       display: flex;
       flex-direction: column;
@@ -71,9 +99,21 @@
     }
     .add-answer-btn {
       width: fit-content;
+
     }
     .answer-block {
-      display: inline;
+      display: flex;
+    }
+    .answer-text {
+      border-width: 0;
+      background-color: rgba(100%, 100%,100%,75%);
+      border-bottom-width: 1px;
+      flex-shrink: 1;
+      flex-grow: 1;
+    }
+    .is-correct-checkbox {
+      flex-shrink: 0;
+      flex-grow: 0;
     }
 
 
@@ -82,7 +122,7 @@
 </head>
 <body>
 
-  <form class="create-form" method="post" action="/create_quiz">
+  <form class="create-form" method="post" action="/create-quiz">
 
     <div>
       <label for="name">Enter test name:</label>
@@ -98,6 +138,10 @@
     </div>
     <button type="button" class="add-question-btn" onclick="addQuestion()">
       Add question
+    </button>
+
+    <button type="submit" class="submit-btn">
+      Create test
     </button>
 
   </form>
@@ -117,8 +161,8 @@
     newQuestion.className = "question-block";
     console.log(newIndex);
     newQuestion.innerHTML = `
-    <label>Question:</label>
-    <input type="text" name="questions[\${newIndex}].text">
+    <label class="question-label">Question:</label>
+    <input type="text" class="question-text" name="questions[\${newIndex}].text" value="Type your question">
 
     <div class="answers-container" id="answers-\${newIndex}"> </div>
     <button type="button" class="add-answer-btn" onclick="addAnswer(\${newIndex})">Add answer</button>
@@ -139,9 +183,12 @@
     const newAnswer = document.createElement("div");
     newAnswer.className = "answer-block";
 
+
     newAnswer.innerHTML = `
-    <input type="text" name="questions[\${questionIndex}].answers[\${answerIndex}].text">
-    <input type="checkbox" name="questions[\${questionIndex}].answers[\${answerIndex}].isCorrect">
+    <input type="text" class="answer-text" name="questions[\${questionIndex}].answers[\${answerIndex}].text">
+    <input type="checkbox" class="is-correct-checkbox"
+        name="questions[\${questionIndex}].answers[\${answerIndex}].isCorrect"
+        value="Type answer" >
     `
     answers.appendChild(newAnswer);
   }
