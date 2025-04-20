@@ -7,6 +7,8 @@ import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.yarek.fasttestapp.model.Constants;
+import org.yarek.fasttestapp.model.database.dao.QuizDAO;
+import org.yarek.fasttestapp.model.database.dao.QuizDAOPostgres;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAOPostgres;
 import org.yarek.fasttestapp.routing.handlers.HttpHandler;
@@ -27,6 +29,7 @@ public class Controller extends HttpServlet {
 
     private HikariDataSource dataSource;
     private UserDAO userDAO;
+    private QuizDAO quizDAO;
 
     List<HttpHandler> handlers;
 
@@ -49,6 +52,7 @@ public class Controller extends HttpServlet {
 
     private void initDAOs() {
         userDAO = new UserDAOPostgres(dataSource);
+        quizDAO = new QuizDAOPostgres(dataSource);
     }
 
     protected void registerHandlers() {
@@ -64,7 +68,7 @@ public class Controller extends HttpServlet {
         handlers.add(new SignupHandler(userDAO));
 
         // Create quiz handler
-        handlers.add(new CreateQuizHandler());
+        handlers.add(new CreateQuizHandler(quizDAO));
     }
 
     @Override

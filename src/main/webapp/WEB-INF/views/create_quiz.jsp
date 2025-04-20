@@ -188,7 +188,7 @@
     </div>
 
 
-    <input type="text" class="question-text" name="questions[\${newIndex}].text" value="Type your question" required>
+    <input type="text" class="question-text" name="questions[\${newIndex}].text" placeholder="Type your question" required>
 
     <div class="answers-container" id="answers-\${newIndex}"></div>
     <button type="button" class="add-answer-btn" onclick="addAnswer(\${newIndex})">Add answer</button>
@@ -212,8 +212,8 @@
 
 
     newAnswer.innerHTML = `
-    <input type="text" class="answer-text" name="not calculated" required>
-    <input type="checkbox" class="is-correct-checkbox" name="not calculated" value="Type answer">
+    <input type="text" class="answer-text" name="not calculated" placeholder="Type answer" required>
+    <input type="checkbox" class="is-correct-checkbox" name="not calculated">
     <button type="button" class="delete-answer-btn" onclick="deleteAnswer(\${questionIndex}, this)">X</button>
     `
     answers.appendChild(newAnswer);
