@@ -103,6 +103,8 @@
     }
     .answer-block {
       display: flex;
+      gap: 20px;
+      justify-content: space-between;
     }
     .answer-text {
       border-width: 0;
@@ -114,6 +116,14 @@
     .is-correct-checkbox {
       flex-shrink: 0;
       flex-grow: 0;
+    }
+    .delete-answer-btn {
+      background-color: #ff9d9d;
+      flex-shrink: 0;
+      flex-grow: 0;
+      font-size: 16px;
+      border-radius: 5px;
+      padding: 1px 10px;
     }
 
 
@@ -182,15 +192,37 @@
 
     const newAnswer = document.createElement("div");
     newAnswer.className = "answer-block";
+    newAnswer.name = `questions[\${questionIndex}].answers[\${answerIndex}]`
 
 
     newAnswer.innerHTML = `
-    <input type="text" class="answer-text" name="questions[\${questionIndex}].answers[\${answerIndex}].text">
-    <input type="checkbox" class="is-correct-checkbox"
-        name="questions[\${questionIndex}].answers[\${answerIndex}].isCorrect"
-        value="Type answer" >
+    <input type="text" class="answer-text" name="not calculated">
+    <input type="checkbox" class="is-correct-checkbox" name="not calculated" value="Type answer">
+    <button type="button" class="delete-answer-btn" onclick="deleteAnswer(\${questionIndex}, this)">X</button>
     `
     answers.appendChild(newAnswer);
+    enumerateAnswersName(questionIndex);
+  }
+
+  function enumerateAnswersName(questionIndex) {
+    const answers = document.getElementById(`answers-\${questionIndex}`);
+    const answersAmount = answers.childElementCount;
+    console.log("Enumeration")
+    for (let i = 1; i < answersAmount+1; i++) {
+      console.log(`i = \${i}`)
+      const answerText = answers.getElementsByClassName("answer-text").item(i-1);
+      answerText.name = `questions[\${questionIndex}].answers[\${i}].text`;
+
+      const answerCheckbox = answers.getElementsByClassName("is-correct-checkbox").item(i-1);
+      answerCheckbox.name = `questions[\${questionIndex}].answers[\${i}].isCorrect`
+    }
+  }
+
+  function deleteAnswer(questionIndex, answerBtn) {
+    const answers = document.getElementById(`answers-\${questionIndex}`);
+    const answer = answerBtn.parentNode;
+    answers.removeChild(answer);
+    enumerateAnswersName(questionIndex);
   }
 
 </script>
