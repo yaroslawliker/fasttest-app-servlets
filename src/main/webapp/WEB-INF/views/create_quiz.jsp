@@ -83,6 +83,9 @@
       border-bottom-width: 1px;
       background-color: rgba(0, 0, 0, 0);
     }
+    .question-label-delete {
+      display: inline-block;
+    }
     .add-question-btn {
       width: 50%;
       align-self: center;
@@ -117,13 +120,18 @@
       flex-shrink: 0;
       flex-grow: 0;
     }
-    .delete-answer-btn {
+    .delete-answer-btn, .delete-question {
       background-color: #ff9d9d;
       flex-shrink: 0;
       flex-grow: 0;
       font-size: 16px;
       border-radius: 5px;
       padding: 1px 10px;
+    }
+    .delete-question {
+      padding-top: 7px;
+      padding-bottom: 7px;
+      float: right;
     }
 
 
@@ -132,17 +140,20 @@
 </head>
 <body>
 
-  <form class="create-form" method="post" action="/create-quiz">
+  <form class="create-form" method="post" action="/create-quiz" onsubmit="return processForm()">
 
     <div>
       <label for="name">Enter test name:</label>
-      <input type="text" id="name" name="name">
+      <input type="text" id="name" name="name" required>
     </div>
 
     <div>
       <label for="description">Enter description</label>
       <textarea id="description" name="description"></textarea>
     </div>
+
+    <%--Technical field, not for user--%>
+    <input id="number-of-questions" name="number-of-questions" hidden="hidden">
 
     <div class="questions-container" id="questions">
     </div>
@@ -171,10 +182,15 @@
     newQuestion.className = "question-block";
     console.log(newIndex);
     newQuestion.innerHTML = `
-    <label class="question-label">Question:</label>
-    <input type="text" class="question-text" name="questions[\${newIndex}].text" value="Type your question">
+    <div class="question-label-delete">
+      <label class="question-label">Question:</label>
+      <button type="button" class="delete-question" onclick="deleteQuestion(\${newIndex}, this)">X</button>
+    </div>
 
-    <div class="answers-container" id="answers-\${newIndex}"> </div>
+
+    <input type="text" class="question-text" name="questions[\${newIndex}].text" value="Type your question" required>
+
+    <div class="answers-container" id="answers-\${newIndex}"></div>
     <button type="button" class="add-answer-btn" onclick="addAnswer(\${newIndex})">Add answer</button>
     `;
 
@@ -196,7 +212,7 @@
 
 
     newAnswer.innerHTML = `
-    <input type="text" class="answer-text" name="not calculated">
+    <input type="text" class="answer-text" name="not calculated" required>
     <input type="checkbox" class="is-correct-checkbox" name="not calculated" value="Type answer">
     <button type="button" class="delete-answer-btn" onclick="deleteAnswer(\${questionIndex}, this)">X</button>
     `
@@ -223,6 +239,58 @@
     const answer = answerBtn.parentNode;
     answers.removeChild(answer);
     enumerateAnswersName(questionIndex);
+  }
+
+  function deleteQuestion(questionIndex, questionBtn) {
+    const questions = document.getElementById("questions");
+    questions.removeChild(questionBtn.parentNode.parentNode);
+    questionsIndexes.splice(questionsIndexes.indexOf(questionIndex), 1);
+  }
+
+  function getLastQuestionIndex() {
+    const questions = document.getElementById("questions");
+    if (questions.children.length === 0) {
+      return -1;
+    }
+    const lastQuestion = questions.children.item(questions.children.length-1);
+    const text = lastQuestion.getElementsByClassName("question-text")[0];
+    const name = text.name;
+    // questions[..].answers[..]
+    const idStart = 10;
+    const idEnd = name.indexOf("].text");
+    const id = name.substring(idStart, idEnd);
+    return Number(id);
+  }
+
+  function processForm() {
+    let id = getLastQuestionIndex();
+
+    if (id === -1) {
+      alert("Form must have at least one question");
+      return false;
+    }
+
+    if (!isEveryQuestionHasAtLeastOneAnswer()) {
+      alert("Every question must have at least one answer")
+      return false;
+    }
+
+    const numberOfQuestions = document.getElementById("number-of-questions");
+    numberOfQuestions.value = id;
+
+    return true;
+  }
+
+  function isEveryQuestionHasAtLeastOneAnswer() {
+    const questions = document.getElementById("questions");
+    for (let i = 0; i < questions.children.length; i++) {
+      const question = questions.children.item(i);
+      const answers = question.getElementsByClassName("answers-container")[0];
+      if (answers.children.length < 1) {
+        return false;
+      }
+    }
+    return true;
   }
 
 </script>
