@@ -66,13 +66,14 @@ public class UserDAOPostgres implements UserDAO {
     @Override
     public User getUser(String username) {
         try(Connection connection = dataSource.getConnection()) {
-            String selectUserSQL = "SELECT username, password, role FROM users WHERE username = ?";
+            String selectUserSQL = "SELECT id, username, password, role FROM users WHERE username = ?";
             PreparedStatement saveStatement = connection.prepareStatement(selectUserSQL);
             saveStatement.setString(1, username);
             ResultSet resultSet = saveStatement.executeQuery();
 
             if (resultSet.next()) {
                 User user = new User();
+                user.setId(String.valueOf(resultSet.getInt("id")));
                 user.setUsername(resultSet.getString("username"));
                 user.setPassword(resultSet.getString("password"));
                 user.setRole(User.Role.valueOf(resultSet.getString("role")));
