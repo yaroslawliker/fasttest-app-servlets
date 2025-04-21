@@ -65,11 +65,12 @@ public class UserDAOPostgres implements UserDAO {
 
     @Override
     public User getUser(String username) {
-        try(Connection connection = dataSource.getConnection()) {
-            String selectUserSQL = "SELECT id, username, password, role FROM users WHERE username = ?";
-            PreparedStatement saveStatement = connection.prepareStatement(selectUserSQL);
-            saveStatement.setString(1, username);
-            ResultSet resultSet = saveStatement.executeQuery();
+        String selectUserSQL = "SELECT id, username, password, role FROM users WHERE username = ?";
+        try(Connection connection = dataSource.getConnection();
+            PreparedStatement getStatement = connection.prepareStatement(selectUserSQL);
+        ) {
+            getStatement.setString(1, username);
+            ResultSet resultSet = getStatement.executeQuery();
 
             if (resultSet.next()) {
                 User user = new User();
@@ -77,8 +78,6 @@ public class UserDAOPostgres implements UserDAO {
                 user.setUsername(resultSet.getString("username"));
                 user.setPassword(resultSet.getString("password"));
                 user.setRole(User.Role.valueOf(resultSet.getString("role")));
-
-                saveStatement.close();
 
                 return user;
             } else {
