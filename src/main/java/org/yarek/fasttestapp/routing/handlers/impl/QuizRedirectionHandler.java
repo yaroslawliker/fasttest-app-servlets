@@ -10,6 +10,7 @@ import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
 import java.util.Map;
+import java.util.Objects;
 
 public class QuizRedirectionHandler extends HttpHandlerBase {
 
@@ -36,7 +37,13 @@ public class QuizRedirectionHandler extends HttpHandlerBase {
         User user = (User) model.get("user");
 
         if (user.getRole() == User.Role.TEACHER) {
-            return uri + "/info@redirect";
+            if (Objects.equals(quiz.getOwnerID(), user.getId())) {
+                return uri + "/info@redirect";
+            } else {
+                resp.getWriter().write("<script>alert('You are not a student or owner of the quiz " + quizId + "')</script>");
+                return "wrong_req";
+            }
+
 
         } else if (user.getRole() == User.Role.USER) {
 
