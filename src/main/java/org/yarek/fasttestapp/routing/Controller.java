@@ -58,8 +58,9 @@ public class Controller extends HttpServlet {
         // Home handler
         handlers.add(new HomeHandler());
 
-        // Login handler
+        // Login and logout handlers
         handlers.add(new LoginHandler(userDAO));
+        handlers.add(new LogoutHandler());
 
         // Sighup handler
         handlers.add(new SignupHandler(userDAO));
