@@ -293,4 +293,26 @@ public class QuizDAOPostgres implements QuizDAO {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public boolean isUserPassingQuiz(String userID, String quizID) {
+        String sql = "SELECT id FROM results WHERE user_id=? AND quiz=? AND finish_time IS NULL;";
+
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
+            statement.setInt(1, Integer.parseInt(userID));
+            statement.setInt(2, Integer.parseInt(quizID));
+
+            ResultSet resultSet = statement.executeQuery();
+            boolean started = resultSet.next();
+
+            resultSet.close();
+
+            return started;
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
 }

@@ -305,4 +305,24 @@ class QuizDAOPostgresTest {
             quizDAO.finishQuizPassing("1", "1", finishTime, 95.2f);
         });
     }
+
+    @Test
+    public void testIsUserQuizPassing() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+
+        String userId = "1";
+        String quizId = "1";
+
+        assertFalse(quizDAO.isUserPassingQuiz(userId, quizId));
+
+        LocalDateTime startTime = LocalDateTime.of(2024, 3, 1, 10, 0);
+        quizDAO.startQuizPassing(userId, quizId, startTime);
+
+        assertTrue(quizDAO.isUserPassingQuiz(userId, quizId));
+
+        LocalDateTime finishTime = LocalDateTime.of(2024, 3, 1, 10, 20);
+        quizDAO.finishQuizPassing(userId, quizId, finishTime, 95.2f);
+
+        assertFalse(quizDAO.isUserPassingQuiz(userId, quizId));
+    }
 }

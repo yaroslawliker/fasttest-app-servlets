@@ -15,4 +15,10 @@ public interface QuizDAO {
 
     void startQuizPassing(String userID, String quizID, LocalDateTime startTime);
     void finishQuizPassing(String userID, String quizID, LocalDateTime endTime, float score);
+
+    /**
+     * Returns true if quiz started but not finished, false otherwise;
+     */
+    boolean isUserPassingQuiz(String userID, String quizID);
+
 }
