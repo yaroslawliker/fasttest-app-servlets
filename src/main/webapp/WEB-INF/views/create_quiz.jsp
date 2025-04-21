@@ -78,10 +78,25 @@
       color: #6e6e6e;
       font-size: 16px;
     }
+    .question-text-score {
+      display: flex;
+      gap: 10px;
+    }
     .question-text {
+      flex-shrink: 1;
+      flex-grow: 1;
       border-width: 0;
       border-bottom-width: 1px;
       background-color: rgba(0, 0, 0, 0);
+    }
+    .question-score {
+      flex-grow: 0;
+      flex-shrink: 0;
+      text-align: center;
+      border-width: 0;
+      border-bottom-width: 1px;
+      background-color: transparent;
+      width: 100px;
     }
     .question-label-delete {
       display: inline-block;
@@ -102,7 +117,6 @@
     }
     .add-answer-btn {
       width: fit-content;
-
     }
     .answer-block {
       display: flex;
@@ -155,8 +169,7 @@
     <%--Technical field, not for user--%>
     <input id="number-of-questions" name="number-of-questions" hidden="hidden">
 
-    <div class="questions-container" id="questions">
-    </div>
+    <div class="questions-container" id="questions"></div>
     <button type="button" class="add-question-btn" onclick="addQuestion()">
       Add question
     </button>
@@ -187,10 +200,13 @@
       <button type="button" class="delete-question" onclick="deleteQuestion(\${newIndex}, this)">X</button>
     </div>
 
-
-    <input type="text" class="question-text" name="questions[\${newIndex}].text" placeholder="Type your question" required>
+    <div class="question-text-score">
+      <input type="text" class="question-text" name="questions[\${newIndex}].text" placeholder="Type your question" required>
+      <input type="number" step="0.01" class="question-score" name="questions[\${newIndex}].score" placeholder="score">
+    </div>
 
     <div class="answers-container" id="answers-\${newIndex}"></div>
+
     <button type="button" class="add-answer-btn" onclick="addAnswer(\${newIndex})">Add answer</button>
     `;
 

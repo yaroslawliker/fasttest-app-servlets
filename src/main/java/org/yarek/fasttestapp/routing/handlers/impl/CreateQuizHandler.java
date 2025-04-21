@@ -53,10 +53,17 @@ public class CreateQuizHandler extends HttpHandlerBase {
         quiz.setCreationDate(creationDate);
         quiz.setOwnerID(user.getId());
 
+        // Getting answers
         for (int i = 1; i < questions+1; i++) {
             String questionText = req.getParameter("questions["+i+"].text");
-            if (questionText != null) {
-                Question question = new Question(questionText, 1);
+
+            if (questionText != null) { // May be null if question was deleted, front-end issues :)
+
+                // Getting score
+                String scoreString = req.getParameter("questions["+i+"].score");
+                float score = (scoreString != null && !scoreString.isEmpty()) ? Float.parseFloat(req.getParameter("questions[" + i + "].score")) : 1f;
+
+                Question question = new Question(questionText, score);
                 // TODO: score
                 int j=0;
                 String answerText = req.getParameter("questions["+i+"].answers["+1+"].text");
