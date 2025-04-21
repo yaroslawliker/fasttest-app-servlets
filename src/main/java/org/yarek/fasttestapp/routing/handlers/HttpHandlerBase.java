@@ -10,27 +10,32 @@ import java.util.List;
 import java.util.Map;
 
 public abstract class HttpHandlerBase implements HttpHandler {
-    List<String> pathList;
+    List<String> pathRegExList;
 
     public HttpHandlerBase() {
-        pathList = new ArrayList<>();
+        pathRegExList = new ArrayList<>();
     }
 
-    public HttpHandlerBase(List<String> pathList) {
-        setProcessingPaths(pathList);
+    public HttpHandlerBase(List<String> pathRegExList) {
+        setProcessingPaths(pathRegExList);
     }
 
     @Override
     public boolean isProcessingPath(String path) {
-        return pathList.contains(path);
+        for (String pathRegEx : pathRegExList) {
+            if (path.matches(pathRegEx)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     public void setProcessingPaths(List<String> pathList) {
-        this.pathList = pathList;
+        this.pathRegExList = pathList;
     }
 
     public void addPath(String path) {
-        pathList.add(path);
+        pathRegExList.add(path);
     }
 
     // --------------------
@@ -38,26 +43,21 @@ public abstract class HttpHandlerBase implements HttpHandler {
     // --------------------
 
     /**
-     * Mapping request method to appropriate class methods.
+     * Mapping the request method to appropriate class methods.
      *
      * @return view name
      */
     @Override
     public String handle(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
         String method = req.getMethod();
-        switch (method) {
-            case "GET":
-                return doGet(req, resp, model);
-            case "POST":
-                return doPost(req, resp, model);
-            case "UPDATE":
-                return doUpdate(req, resp, model);
-            case "DELETE":
-                return doDelete(req, resp, model);
-
-            default:
-                throw new ServletException("Unsupported HTTP method: " + method + ". Add it into HttpHandlerBase class");
-        }
+        return switch (method) {
+            case "GET" -> doGet(req, resp, model);
+            case "POST" -> doPost(req, resp, model);
+            case "UPDATE" -> doUpdate(req, resp, model);
+            case "DELETE" -> doDelete(req, resp, model);
+            default ->
+                    throw new ServletException("Unsupported HTTP method: " + method + ". Add it into HttpHandlerBase class");
+        };
     }
 
     protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
