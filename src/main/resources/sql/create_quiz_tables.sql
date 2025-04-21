@@ -23,6 +23,8 @@ CREATE TABLE answers (
 CREATE TABLE results (
     id serial PRIMARY KEY,
     score numeric,
+    start_time timestamp,
+    finish_time timestamp,
     user_id integer REFERENCES users(id),
     quiz integer REFERENCES quizzes(id)
 );

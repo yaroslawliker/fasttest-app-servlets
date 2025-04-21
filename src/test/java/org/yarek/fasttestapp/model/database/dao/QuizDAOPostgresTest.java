@@ -17,6 +17,7 @@ import org.yarek.fasttestapp.model.entities.quiz.Quiz;
 import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Objects;
 
@@ -246,10 +247,11 @@ class QuizDAOPostgresTest {
     }
 
     @Test
-    public void testRegisterQuizPassed() throws SQLException {
+    public void testStartQuizPassing() throws SQLException {
         QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
 
-        quizDAO.registerQuizPassed("1", "1", 3);
+        LocalDateTime time = LocalDateTime.of(2024, 3, 1, 10, 0);
+        quizDAO.startQuizPassing("1", "1", time);
 
         Connection connection = dataSource.getConnection();
         Statement statement = connection.createStatement();
@@ -257,7 +259,7 @@ class QuizDAOPostgresTest {
         assertTrue(resultSet.next());
 
         assertEquals(1, resultSet.getInt("user_id"));
-        assertEquals(1, resultSet.getInt("id"));
-        assertEquals(3, resultSet.getInt("score"));
+        assertEquals(1, resultSet.getInt("quiz"));
+        assertEquals(Timestamp.valueOf(time), resultSet.getTimestamp("start_time"));
     }
 }

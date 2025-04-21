@@ -8,6 +8,7 @@ import org.yarek.fasttestapp.model.entities.quiz.Quiz;
 import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
 
 import java.sql.*;
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
@@ -245,17 +246,48 @@ public class QuizDAOPostgres implements QuizDAO {
     }
 
     @Override
-    public void registerQuizPassed(String userID, String quizId, float score) {
+    public void startQuizPassing(String userID, String quizID, LocalDateTime startTime) {
         try( Connection connection = dataSource.getConnection(); ) {
 
-            String sql = "INSERT INTO results (score, user_id, quiz) VALUES (?, ?, ?);";
+            String sql = "INSERT INTO results (user_id, quiz, start_time) VALUES (?, ?, ?);";
 
             PreparedStatement statement = connection.prepareStatement(sql);
-            statement.setFloat(1, score);
-            statement.setInt(2, Integer.parseInt(userID));
-            statement.setInt(3, Integer.parseInt(quizId));
+            statement.setInt(1, Integer.parseInt(userID));
+            statement.setInt(2, Integer.parseInt(quizID));
+            statement.setTimestamp(3, Timestamp.valueOf(startTime));
             statement.executeUpdate();
             statement.close();
+
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    @Override
+    public void finishQuizPassing(String userID, String quizID, LocalDateTime endTime, float score) {
+        String sql = "UPDATE results SET finish_date=?, score=? WHERE user_id=? AND quiz=? AND finish_time=NULL;";
+
+        try( Connection connection = dataSource.getConnection();
+             PreparedStatement statement = connection.prepareStatement(sql);
+        ) {
+            statement.setTimestamp(1, Timestamp.valueOf(endTime));
+            statement.setFloat(2, score);
+            statement.setInt(3, Integer.parseInt(userID));
+            statement.setInt(4, Integer.parseInt(quizID));
+            int modified = statement.executeUpdate();
+
+            // Check if only one row modified (as expected)
+            if (modified != 1) {
+                String problem;
+                if (modified < 1) {
+                    problem = "no quiz passing found to finish.";
+                } else {
+                    problem = "few quiz passing found.";
+                }
+                throw new RuntimeException(
+                        "Error while finishing quiz: " + problem + "User = " + userID
+                        + " Quiz = " + quizID + " Modified: " + modified);
+            }
 
         } catch (SQLException e) {
             throw new RuntimeException(e);
