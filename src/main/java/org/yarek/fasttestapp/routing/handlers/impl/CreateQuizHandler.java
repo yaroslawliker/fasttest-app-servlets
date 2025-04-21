@@ -20,7 +20,7 @@ public class CreateQuizHandler extends HttpHandlerBase {
 
     public CreateQuizHandler(QuizDAO quizDAO) {
         this.quizDAO = quizDAO;
-        addPath("/create-quiz");
+        addPath("/create-test");
     }
 
     @Override

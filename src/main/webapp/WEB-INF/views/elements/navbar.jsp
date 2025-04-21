@@ -64,7 +64,7 @@
 
             <c:if test = "${sessionScope.user.role.name() == 'TEACHER'}">
                 <a href="/my-tests">My tests</a>
-                <a href="/create-quiz">Create</a>
+                <a href="/create-test">Create</a>
             </c:if>
 
             <c:if test="${sessionScope.user.role.name() == 'USER'}">
