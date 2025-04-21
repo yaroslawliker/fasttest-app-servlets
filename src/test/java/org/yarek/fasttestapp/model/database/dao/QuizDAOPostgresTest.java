@@ -261,5 +261,48 @@ class QuizDAOPostgresTest {
         assertEquals(1, resultSet.getInt("user_id"));
         assertEquals(1, resultSet.getInt("quiz"));
         assertEquals(Timestamp.valueOf(time), resultSet.getTimestamp("start_time"));
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+    }
+
+    @Test
+    public void testFinishQuizPassing() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+
+        LocalDateTime startTime = LocalDateTime.of(2024, 3, 1, 10, 0);
+        quizDAO.startQuizPassing("1", "1", startTime);
+
+        LocalDateTime finishTime = LocalDateTime.of(2024, 3, 1, 10, 20);
+        quizDAO.finishQuizPassing("1", "1", finishTime, 95.2f);
+
+        Connection connection = dataSource.getConnection();
+        Statement statement = connection.createStatement();
+        ResultSet resultSet = statement.executeQuery("SELECT * FROM results");
+        assertTrue(resultSet.next());
+
+        assertEquals(95.2f, resultSet.getFloat("score"));
+
+        assertEquals(Timestamp.valueOf(startTime), resultSet.getTimestamp("start_time"));
+        assertEquals(Timestamp.valueOf(finishTime), resultSet.getTimestamp("finish_time"));
+
+        assertEquals(1, resultSet.getInt("user_id"));
+        assertEquals(1, resultSet.getInt("quiz"));
+
+        resultSet.close();
+        statement.close();
+        connection.close();
+
+    }
+
+    @Test
+    public void testFinishNotExistingQuizPassing() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+
+        LocalDateTime finishTime = LocalDateTime.of(2024, 3, 1, 10, 20);
+        assertThrows(RuntimeException.class, () -> {
+            quizDAO.finishQuizPassing("1", "1", finishTime, 95.2f);
+        });
     }
 }

@@ -265,7 +265,7 @@ public class QuizDAOPostgres implements QuizDAO {
 
     @Override
     public void finishQuizPassing(String userID, String quizID, LocalDateTime endTime, float score) {
-        String sql = "UPDATE results SET finish_date=?, score=? WHERE user_id=? AND quiz=? AND finish_time=NULL;";
+        String sql = "UPDATE results SET finish_time=?, score=? WHERE user_id=? AND quiz=? AND finish_time IS NULL;";
 
         try( Connection connection = dataSource.getConnection();
              PreparedStatement statement = connection.prepareStatement(sql);
