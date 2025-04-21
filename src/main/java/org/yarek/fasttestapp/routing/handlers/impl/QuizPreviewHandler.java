@@ -5,10 +5,12 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.yarek.fasttestapp.model.database.dao.QuizDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
+import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
 import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
+import java.time.LocalDateTime;
 import java.util.Map;
 
 public class QuizPreviewHandler extends HttpHandlerBase {
@@ -39,5 +41,19 @@ public class QuizPreviewHandler extends HttpHandlerBase {
         model.put("questionAmount", quiz.getQuestions().size());
 
         return "quiz_preview";
+    }
+
+    @Override
+    protected String doPost(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
+        String quizId = req.getParameter("quizId");
+
+        User user = (User) req.getSession().getAttribute("user");
+        if (user.getRole() != User.Role.USER) {
+            return "wrong_req";
+        }
+
+        LocalDateTime now = LocalDateTime.now();
+        quizDAO.startQuizPassing(user.getId(), quizId, now);
+        return "tests/" + quizId + "@redirect";
     }
 }
