@@ -40,6 +40,7 @@ public class AuthentificationFilter extends HttpFilter {
         allowedPaths.add("/login");
         allowedPaths.add("/signup");
         allowedPaths.add("/register");
+        allowedPaths.add("/tests");
     }
 
 }

@@ -12,10 +12,7 @@ import org.yarek.fasttestapp.model.database.dao.QuizDAOPostgres;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAOPostgres;
 import org.yarek.fasttestapp.routing.handlers.HttpHandler;
-import org.yarek.fasttestapp.routing.handlers.impl.CreateQuizHandler;
-import org.yarek.fasttestapp.routing.handlers.impl.HomeHandler;
-import org.yarek.fasttestapp.routing.handlers.impl.LoginHandler;
-import org.yarek.fasttestapp.routing.handlers.impl.SignupHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.*;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -69,6 +66,9 @@ public class Controller extends HttpServlet {
 
         // Create quiz handler
         handlers.add(new CreateQuizHandler(quizDAO));
+
+        // QuizzesPreviewHandler
+        handlers.add(new QuizzesPreviewHandler(userDAO, quizDAO));
     }
 
     @Override
