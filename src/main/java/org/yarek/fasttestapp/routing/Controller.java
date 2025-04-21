@@ -24,7 +24,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-@WebServlet("/*")
+@WebServlet(value = "/*", loadOnStartup = 1)
 public class Controller extends HttpServlet {
 
     private HikariDataSource dataSource;
