@@ -25,7 +25,7 @@ public class QuizRedirectionHandler extends HttpHandlerBase {
     @Override
     protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
 
-        String uri = req.getRequestURI();
+        String uri = req.getRequestURI().substring(1);
         String quizId = uri.substring(uri.lastIndexOf("/") + 1);
 
         Quiz quiz = quizDAO.getQuizById(quizId);
@@ -34,7 +34,7 @@ public class QuizRedirectionHandler extends HttpHandlerBase {
             return "wrong_req";
         }
 
-        User user = (User) model.get("user");
+        User user = (User) req.getSession().getAttribute("user");
 
         if (user.getRole() == User.Role.TEACHER) {
             if (Objects.equals(quiz.getOwnerID(), user.getId())) {

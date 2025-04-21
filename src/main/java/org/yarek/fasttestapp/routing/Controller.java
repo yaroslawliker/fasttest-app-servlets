@@ -94,7 +94,7 @@ public class Controller extends HttpServlet {
                     view = view.substring(0, view.lastIndexOf("@redirect"));
                     resp.sendRedirect("/" + view);
                 } else {
-                    req.getRequestDispatcher(String.format("WEB-INF/views/%s.jsp", view)).forward(req, resp);
+                    req.getRequestDispatcher(String.format("/WEB-INF/views/%s.jsp", view)).forward(req, resp);
                 }
                 break;
             }
