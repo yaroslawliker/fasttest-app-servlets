@@ -50,6 +50,8 @@ public class Controller extends HttpServlet {
     private void initDAOs() {
         userDAO = new UserDAOPostgres(dataSource);
         quizDAO = new QuizDAOPostgres(dataSource);
+
+        getServletContext().setAttribute("quizDAO", quizDAO); // For filters to use
     }
 
     protected void registerHandlers() {

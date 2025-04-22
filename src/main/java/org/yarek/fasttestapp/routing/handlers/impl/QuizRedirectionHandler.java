@@ -25,29 +25,26 @@ public class QuizRedirectionHandler extends HttpHandlerBase {
     @Override
     protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
 
-        String uri = req.getRequestURI().substring(1);
-        String quizId = uri.substring(uri.lastIndexOf("/") + 1);
+        // Ensured by QuizIdFilter
+        Quiz quiz = (Quiz) req.getAttribute("quiz");
 
-        Quiz quiz = quizDAO.getQuizById(quizId);
-        if (quiz == null) {
-            resp.getWriter().write("<script>alert('No such quiz with id" + quizId + "')</script>");
-            return "wrong_req";
-        }
-
+        // Ensured by AuthorizationFilter
         User user = (User) req.getSession().getAttribute("user");
+
+        String uri = req.getRequestURI().substring(1);
 
         if (user.getRole() == User.Role.TEACHER) {
             if (Objects.equals(quiz.getOwnerID(), user.getId())) {
                 return uri + "/info@redirect";
             } else {
-                resp.getWriter().write("<script>alert('You are not a student or owner of the quiz " + quizId + "')</script>");
+                resp.getWriter().write("<script>alert('You are not a student or owner of the quiz " + quiz.getId() + "')</script>");
                 return "wrong_req";
             }
 
 
         } else if (user.getRole() == User.Role.USER) {
 
-            if (quizDAO.isUserPassingQuiz(user.getId(), quizId)) {
+            if (quizDAO.isUserPassingQuiz(user.getId(), quiz.getId())) {
                 return uri + "/started@redirect";
             } else {
                 return uri + "/preview@redirect";

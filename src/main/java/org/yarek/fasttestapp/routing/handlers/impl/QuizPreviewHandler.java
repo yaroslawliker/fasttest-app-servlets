@@ -26,14 +26,11 @@ public class QuizPreviewHandler extends HttpHandlerBase {
 
     @Override
     protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
-        // set quiz
-        String uri = req.getRequestURI();
-        String quizId = uri.substring(uri.lastIndexOf("tests/") + 6, uri.lastIndexOf("/preview"));
 
-        Quiz quiz = quizDAO.getQuizById(quizId);
-        if (quiz == null) {
-            return "wrong_req";
-        }
+        // Ensured by QuizIdFilter
+        Quiz quiz = (Quiz) req.getAttribute("quiz");
+        String quizId = quiz.getId();
+
         String username = userDAO.getUsernameByID(quiz.getOwnerID());
 
         model.put("quiz", quiz);
