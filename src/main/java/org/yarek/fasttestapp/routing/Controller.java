@@ -76,6 +76,7 @@ public class Controller extends HttpServlet {
         // QuizRedirector
         handlers.add(new QuizRedirectionHandler(quizDAO));
         handlers.add(new QuizPreviewHandler(userDAO, quizDAO));
+        handlers.add((new QuizStartedHandler(userDAO)));
     }
 
     @Override
