@@ -70,7 +70,7 @@ public class UserDAOPostgres implements UserDAO {
     public String getUsernameByID(String userID) {
         String username = genericDAO.findOne(
                 "SELECT username FROM users WHERE id = ?",
-                Map.of(1, userID),
+                Map.of(1, Integer.valueOf(userID)),
                 (ResultSet resultSet) -> {
                     try {
                         return resultSet.getString("username");
