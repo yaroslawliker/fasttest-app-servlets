@@ -1,9 +1,8 @@
-package org.yarek.fasttestapp.routing.handlers.impl;
+package org.yarek.fasttestapp.routing.handlers.impl.account;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import org.yarek.fasttestapp.routing.handlers.HttpHandler;
 import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
