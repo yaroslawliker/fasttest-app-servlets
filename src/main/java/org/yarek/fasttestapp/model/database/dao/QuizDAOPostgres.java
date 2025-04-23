@@ -2,6 +2,7 @@ package org.yarek.fasttestapp.model.database.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
 import jakarta.validation.constraints.NotNull;
+import org.yarek.fasttestapp.model.database.entities.QuizResultData;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
@@ -317,4 +318,36 @@ public class QuizDAOPostgres implements QuizDAO {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public List<QuizResultData> getQuizResultsOfUser(String userID) {
+        String sql = "SELECT score, start_time, finish_time, user_id, quiz FROM results WHERE user_id=?;";
+
+        return genericDAO.findAll(
+                sql,
+                Map.of(1, Integer.valueOf(userID)),
+                this::extractQuizResultDataFromResultSet
+        );
+    }
+
+    QuizResultData extractQuizResultDataFromResultSet(ResultSet resultSet) {
+        try {
+            QuizResultData quizResultData = new QuizResultData();
+
+            quizResultData.setId(null);
+
+            quizResultData.setScore(resultSet.getFloat(1));
+            quizResultData.setStartTime(resultSet.getTimestamp(2).toLocalDateTime());
+            quizResultData.setFinishTime(resultSet.getTimestamp(3).toLocalDateTime());
+            quizResultData.setUserId(String.valueOf(resultSet.getInt(4)));
+            quizResultData.setQuizId(String.valueOf(resultSet.getInt(4)));
+
+            return quizResultData;
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
 }
