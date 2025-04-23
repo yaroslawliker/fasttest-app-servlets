@@ -14,7 +14,7 @@ import org.yarek.fasttestapp.model.database.LoaderSQL;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
-import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
+import org.yarek.fasttestapp.model.database.entities.QuizPreviewData;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -81,7 +81,7 @@ class QuizDAOPostgresTest {
 
         // Testing results
         QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
-        List<QuizPreview> previews = quizDAO.getQuizPreviews(2);
+        List<QuizPreviewData> previews = quizDAO.getQuizPreviews(2);
 
         assertEquals(2, previews.size());
 

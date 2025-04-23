@@ -5,7 +5,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.yarek.fasttestapp.model.database.dao.QuizDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
-import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
+import org.yarek.fasttestapp.model.database.entities.QuizPreviewData;
 import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
@@ -26,10 +26,10 @@ public class QuizzesPreviewHandler extends HttpHandlerBase {
 
     @Override
     protected String doGet(HttpServletRequest req, HttpServletResponse resp, Map<String, Object> model) throws ServletException, IOException {
-        List<QuizPreview> quizzes = quizDAO.getQuizPreviews(10);
+        List<QuizPreviewData> quizzes = quizDAO.getQuizPreviews(10);
 
         List<String> usernames = new ArrayList<String>();
-        for (QuizPreview quizPreview : quizzes) {
+        for (QuizPreviewData quizPreview : quizzes) {
             String userID = quizPreview.getOwnerID();
             String username = userDAO.getUsernameByID(userID);
             usernames.add(username);

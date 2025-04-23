@@ -1,8 +1,8 @@
-package org.yarek.fasttestapp.model.entities.quiz;
+package org.yarek.fasttestapp.model.database.entities;
 
 import java.util.Date;
 
-public class QuizPreview {
+public class QuizPreviewData {
 
     private final String id;
     private final String ownerID;
@@ -10,7 +10,7 @@ public class QuizPreview {
     private final String description;
     private final Date creationDate;
 
-    public QuizPreview(String id, String ownerID, String name, String description, Date creationDate) {
+    public QuizPreviewData(String id, String ownerID, String name, String description, Date creationDate) {
         this.id = id;
         this.ownerID = ownerID;
         this.name = name;

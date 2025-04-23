@@ -5,7 +5,7 @@ import jakarta.validation.constraints.NotNull;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
-import org.yarek.fasttestapp.model.entities.quiz.QuizPreview;
+import org.yarek.fasttestapp.model.database.entities.QuizPreviewData;
 
 import java.sql.*;
 import java.time.LocalDateTime;
@@ -23,13 +23,13 @@ public class QuizDAOPostgres implements QuizDAO {
     }
 
     @Override
-    public List<QuizPreview> getQuizPreviews() {
+    public List<QuizPreviewData> getQuizPreviews() {
         return getQuizPreviews(deafultPreviewAmount);
     }
 
     @Override
-    public List<QuizPreview> getQuizPreviews(int amount) {
-        List<QuizPreview> testPreviews = new ArrayList<>();
+    public List<QuizPreviewData> getQuizPreviews(int amount) {
+        List<QuizPreviewData> testPreviews = new ArrayList<>();
 
         try (Connection quizzesConnection = dataSource.getConnection();
              Connection usersConnection = dataSource.getConnection();
@@ -48,7 +48,7 @@ public class QuizDAOPostgres implements QuizDAO {
                 String ownerID = quizRs.getString("owner");
 
                 // Saving the quiz preview
-                QuizPreview preview = new QuizPreview(id, ownerID, name, description, creationDate);
+                QuizPreviewData preview = new QuizPreviewData(id, ownerID, name, description, creationDate);
                 testPreviews.add(preview);
             }
 
