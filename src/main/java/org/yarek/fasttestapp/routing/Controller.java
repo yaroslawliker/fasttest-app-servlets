@@ -65,18 +65,17 @@ public class Controller extends HttpServlet {
         // Home handler
         handlers.add(new HomeHandler());
 
-        // Login and logout handlers
+        // Login, logout, and signup handlers
         handlers.add(new LoginHandler(userDAO));
         handlers.add(new LogoutHandler());
-
-        // Sighup handler
         handlers.add(new SignupHandler(userDAO));
 
         // Create quiz handler
         handlers.add(new CreateQuizHandler(quizDAO));
 
-        // QuizzesPreviewHandler
+        // Multiply view handlers
         handlers.add(new QuizzesPreviewHandler(userDAO, quizDAO));
+        handlers.add(new PassedHandler(userDAO, quizDAO));
 
         // QuizRedirector
         handlers.add(new QuizRedirectionHandler(quizDAO));
