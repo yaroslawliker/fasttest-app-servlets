@@ -1,8 +1,8 @@
 <%--
   Created by IntelliJ IDEA.
   User: yarek
-  Date: 22.04.25
-  Time: 18:25
+  Date: 23.04.25
+  Time: 10:14
   To change this template use File | Settings | File Templates.
 --%>
 
@@ -137,32 +137,11 @@
 
 </div>
 
-<form action="/tests/${requestScope.quiz.id}/started" method="post">
-<c:forEach var="i" begin="0" end="${requestScope.quiz.questions.size()-1}">
-    <div class="container content question-block">
-        <div class="text">${ requestScope.quiz.questions[i].content}</div>
-
-        <div class="line"></div>
-
-        <div class="answers">
-            <c:forEach var="j" begin="0" end="${requestScope.quiz.questions[i].answers.size()-1}">
-                <div class="answer-block">
-                    <div class="answer">
-                        ${requestScope.quiz.questions[i].answers[j].content}
-                    </div>
-                    <input class="answer-checkbox" type="checkbox" name="questions[${i}].answers[${j}].isChecked" value="true">
-                </div>
-            </c:forEach>
-        </div>
-    </div>
-</c:forEach>
-
-    <input type="text" name="quizId" hidden="hidden" value="${requestScope.quiz.id}">
-    <button type="submit" class="container finish-button">
-        Finish test!
-    </button>
-</form>
+<div class="container content question-block">
+    <div class="text">Score: ${requestScope.score}</div>
+</div>
 
 </body>
 </html>
+
 
