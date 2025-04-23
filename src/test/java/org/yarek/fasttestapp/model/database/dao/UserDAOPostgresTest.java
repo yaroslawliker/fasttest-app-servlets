@@ -55,6 +55,7 @@ class UserDAOPostgresTest {
         String sql = LoaderSQL.load("create_users_table");
         stmt.executeUpdate(sql);
         stmt.close();
+        conn.close();
     }
 
     @AfterEach
@@ -64,6 +65,7 @@ class UserDAOPostgresTest {
         String sql = "DROP TABLE users;";
         stmt.executeUpdate(sql);
         stmt.close();
+        conn.close();
     }
 
     // -----
@@ -81,6 +83,7 @@ class UserDAOPostgresTest {
 
         stmt.executeUpdate();
         stmt.close();
+        conn.close();
 
         UserDAO userDAO = new UserDAOPostgres(dataSource);
 
