@@ -340,7 +340,7 @@ public class QuizDAOPostgres implements QuizDAO {
             quizResultData.setStartTime(resultSet.getTimestamp(2).toLocalDateTime());
             quizResultData.setFinishTime(resultSet.getTimestamp(3).toLocalDateTime());
             quizResultData.setUserId(String.valueOf(resultSet.getInt(4)));
-            quizResultData.setQuizId(String.valueOf(resultSet.getInt(4)));
+            quizResultData.setQuizId(String.valueOf(resultSet.getInt(5)));
 
             return quizResultData;
         } catch (SQLException e) {

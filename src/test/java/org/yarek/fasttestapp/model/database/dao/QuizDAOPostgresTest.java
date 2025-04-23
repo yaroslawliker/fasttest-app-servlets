@@ -11,6 +11,7 @@ import org.junit.jupiter.api.parallel.ExecutionMode;
 import org.yarek.fasttestapp.devscripts.PostgresScripts;
 import org.yarek.fasttestapp.model.Constants;
 import org.yarek.fasttestapp.model.database.LoaderSQL;
+import org.yarek.fasttestapp.model.database.entities.QuizResultData;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
@@ -324,5 +325,54 @@ class QuizDAOPostgresTest {
         quizDAO.finishQuizPassing(userId, quizId, finishTime, 95.2f);
 
         assertFalse(quizDAO.isUserPassingQuiz(userId, quizId));
+    }
+
+    @Test
+    void testGetQuizResultsOfUser() throws SQLException {
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+
+        String userId = "1";
+
+        // Preparing data
+        LocalDateTime startTime1 = LocalDateTime.of(2024, 3, 1, 10, 0);
+        LocalDateTime finishTime1 = LocalDateTime.of(2024, 3, 1, 10, 20);
+        String quizId1 = "1";
+        float score1 = 95.2f;
+
+        LocalDateTime startTime2 = LocalDateTime.of(2024, 3, 4, 10, 0);
+        LocalDateTime finishTime2 = LocalDateTime.of(2024, 3, 4, 10, 20);
+        String quizId2 = "2";
+        float score2 = 30f;
+
+        // Saving to db
+        quizDAO.startQuizPassing(userId, quizId1, startTime1);
+        quizDAO.finishQuizPassing(userId, quizId1, finishTime1, score1);
+        quizDAO.startQuizPassing(userId, quizId2, startTime2);
+        quizDAO.finishQuizPassing(userId, quizId2, finishTime2, score2);
+
+        // Extracting from db
+        List<QuizResultData> QuizResults = quizDAO.getQuizResultsOfUser(userId);
+
+        // Checking size
+        assertEquals(2, QuizResults.size());
+
+        // Checking quiz result 1
+        QuizResultData firstResult = QuizResults.getFirst();
+
+        assertEquals(score1, firstResult.getScore());
+        assertEquals(startTime1, firstResult.getStartTime());
+        assertEquals(finishTime1, firstResult.getFinishTime());
+        assertEquals(userId, firstResult.getUserId());
+        assertEquals(quizId1, firstResult.getQuizId());
+
+        // Checking quiz result 1
+        QuizResultData secondResult = QuizResults.get(1);
+
+        assertEquals(score2, secondResult.getScore());
+        assertEquals(startTime2, secondResult.getStartTime());
+        assertEquals(finishTime2, secondResult.getFinishTime());
+        assertEquals(userId, secondResult.getUserId());
+        assertEquals(quizId2, secondResult.getQuizId());
+
     }
 }
