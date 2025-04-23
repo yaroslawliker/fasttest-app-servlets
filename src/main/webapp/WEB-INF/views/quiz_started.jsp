@@ -44,6 +44,11 @@
         .content {
             overflow: auto;
         }
+        form {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
 
         .quizzes-name {
             font-weight: bold;

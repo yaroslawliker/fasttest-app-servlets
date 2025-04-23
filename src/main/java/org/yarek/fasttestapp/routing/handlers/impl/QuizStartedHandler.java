@@ -62,6 +62,8 @@ public class QuizStartedHandler extends HttpHandlerBase {
 
         quizDAO.finishQuizPassing(user.getId(), quiz.getId(), LocalDateTime.now(), score);
 
+        String ownerUsername = userDAO.getUsernameByID(quiz.getOwnerID());
+        req.setAttribute("username", ownerUsername);
         req.setAttribute("score", score);
         req.setAttribute("maxScore", maxScore);
         return "quiz_result";

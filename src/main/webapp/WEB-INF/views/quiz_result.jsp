@@ -138,7 +138,7 @@
 </div>
 
 <div class="container content question-block">
-    <div class="text">Score: ${requestScope.score}</div>
+    <div class="text">Score: ${requestScope.score} / ${requestScope.maxScore}</div>
 </div>
 
 </body>
