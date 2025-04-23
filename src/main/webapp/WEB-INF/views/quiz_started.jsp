@@ -53,6 +53,7 @@
             width: 95%;
         }
         .name {
+            max-width: 350px;
             font-weight: bold;
             font-size: small;
         }
@@ -82,6 +83,9 @@
         .question-block {
             gap: 10px;
         }
+        .text {
+            max-width: 350px;
+        }
 
         .finish-button {
             padding: 50px;
@@ -108,6 +112,7 @@
             width: fit-content;
             flex-grow: 0;
             flex-shrink: 0;
+            margin-left: 10px;
         }
 
     </style>
