@@ -13,9 +13,11 @@ import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAOPostgres;
 import org.yarek.fasttestapp.routing.handlers.HttpHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.*;
+import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizPreviewHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizRedirectionHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizStartedHandler;
 
 import java.io.IOException;
-import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;

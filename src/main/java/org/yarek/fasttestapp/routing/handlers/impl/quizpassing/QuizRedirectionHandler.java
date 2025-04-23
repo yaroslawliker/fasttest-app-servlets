@@ -1,4 +1,4 @@
-package org.yarek.fasttestapp.routing.handlers.impl;
+package org.yarek.fasttestapp.routing.handlers.impl.quizpassing;
 
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
