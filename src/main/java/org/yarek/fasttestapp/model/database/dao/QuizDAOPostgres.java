@@ -12,14 +12,17 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 public class QuizDAOPostgres implements QuizDAO {
 
     private HikariDataSource dataSource;
+    private GenericDAOPostgres genericDAO;
     private final int deafultPreviewAmount = 10;
 
     public QuizDAOPostgres(@NotNull HikariDataSource dataSource) {
         this.dataSource = dataSource;
+        this.genericDAO = new GenericDAOPostgres(dataSource);
     }
 
     @Override
@@ -29,68 +32,62 @@ public class QuizDAOPostgres implements QuizDAO {
 
     @Override
     public List<QuizPreviewData> getQuizPreviews(int amount) {
-        List<QuizPreviewData> testPreviews = new ArrayList<>();
+        return genericDAO.findAll(
+                "SELECT id, name, description, creation_date, owner FROM quizzes ORDER BY creation_date DESC LIMIT " + amount,
+                Map.of(),
+                this::extractQuizPreviewDataFromResultSet
+        );
+    }
 
-        try (Connection quizzesConnection = dataSource.getConnection();
-             Connection usersConnection = dataSource.getConnection();
-        ) {
-            // Getting first <amount> quizzes
-            Statement quizzStatement = quizzesConnection.createStatement();
-            ResultSet quizRs = quizzStatement.executeQuery("SELECT id, name, description, creation_date, owner FROM quizzes ORDER BY creation_date DESC LIMIT " + amount);
+    QuizPreviewData extractQuizPreviewDataFromResultSet(ResultSet resultSet) {
+        try {
+            String id = resultSet.getString("id");
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            Date creationDate = resultSet.getDate("creation_date");
+            String ownerID = resultSet.getString("owner");
 
-            // Iteration through all row for quizzes
-            while (quizRs.next()) {
-                // Getting on unreferenced data
-                String id = quizRs.getString("id");
-                String name = quizRs.getString("name");
-                String description = quizRs.getString("description");
-                Date creationDate = quizRs.getDate("creation_date");
-                String ownerID = quizRs.getString("owner");
-
-                // Saving the quiz preview
-                QuizPreviewData preview = new QuizPreviewData(id, ownerID, name, description, creationDate);
-                testPreviews.add(preview);
-            }
-
-            quizRs.close();
-            quizzStatement.close();
-
+            return new QuizPreviewData(id, ownerID, name, description, creationDate);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
-        return testPreviews;
     }
 
     @Override
     public Quiz getQuizById(String quizId) {
-        Quiz quiz;
-        try (Connection connection = dataSource.getConnection();
-        ) {
-            PreparedStatement quizStatement = connection.prepareStatement("SELECT id, name, description, creation_date, owner FROM quizzes WHERE id = ?");
-            quizStatement.setInt(1, Integer.parseInt(quizId));
-            ResultSet quizRs = quizStatement.executeQuery();
-            if (!quizRs.next()) {
-                throw new RuntimeException("No such quiz: " + quizId);
-            }
-            String name = quizRs.getString("name");
-            String description = quizRs.getString("description");
-            Date creationDate = quizRs.getDate("creation_date");
-            String ownerID = String.valueOf(quizRs.getInt("owner"));
-            quizStatement.close();
-            quizRs.close();
+
+        Quiz quiz = genericDAO.findOne(
+                "SELECT id, name, description, creation_date, owner FROM quizzes WHERE id = ?",
+                Map.of(1, Integer.parseInt(quizId)),
+                this::extractQuizFromResultSet
+        );
+
+        if (quiz == null) {
+            throw new RuntimeException("No such quiz: " + quizId);
+        }
+
+        // Getting questions
+        List<Question> questions = this.getQuestionsOfQuiz(quizId);
+        quiz.setQuestions(questions);
+
+        return quiz;
+    }
+
+    Quiz extractQuizFromResultSet(ResultSet resultSet) {
+        try {
+            String quizId = String.valueOf(resultSet.getInt("id"));
+            String name = resultSet.getString("name");
+            String description = resultSet.getString("description");
+            Date creationDate = resultSet.getDate("creation_date");
+            String ownerID = String.valueOf(resultSet.getInt("owner"));
 
             // Instantiating quiz
-            quiz = new Quiz();
+            Quiz quiz = new Quiz();
             quiz.setId(quizId);
             quiz.setName(name);
             quiz.setDescription(description);
             quiz.setOwnerID(ownerID);
             quiz.setCreationDate(creationDate);
-
-            // Getting questions
-            List<Question> questions = this.getQuestionsOfQuiz(quizId);
-            quiz.setQuestions(questions);
 
             return quiz;
 
@@ -101,50 +98,55 @@ public class QuizDAOPostgres implements QuizDAO {
 
     private List<Question> getQuestionsOfQuiz(String quizId) {
         List<Question> questions = new ArrayList<>();
-        try (Connection connection = dataSource.getConnection()) {
-            String sql = "SELECT id, content, score FROM questions WHERE quiz = ?";
-            PreparedStatement preparedStatement = connection.prepareStatement(sql);
-            preparedStatement.setInt(1, Integer.parseInt(quizId));
-            ResultSet resultSet = preparedStatement.executeQuery();
-            while (resultSet.next()) {
-                // Get direct parameters
-                String id = String.valueOf(resultSet.getInt("id"));
-                String content = resultSet.getString("content");
-                float score = resultSet.getFloat("score");
-                Question question = new Question(content, score);
 
-                // Getting answers
-                List<Answer> answers = this.getAnswersOfQuestion(id);
-                question.setAnswers(answers);
-
-                // Adding to result list
-                questions.add(question);
-            }
-
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
-        }
+        questions = genericDAO.findAll(
+                "SELECT id, content, score FROM questions WHERE quiz = ?",
+                Map.of(1,Integer.parseInt(quizId)),
+                this::getQuestionsFromResultSet
+        );
 
         return questions;
     }
 
-    private List<Answer> getAnswersOfQuestion(String questionId) {
-        try (Connection connection = dataSource.getConnection();
-            PreparedStatement questionStatement = connection.prepareStatement("SELECT content, is_correct FROM answers WHERE question = ?");
-        ) {
-            questionStatement.setInt(1, Integer.parseInt(questionId));
-            ResultSet questionRs = questionStatement.executeQuery();
-            List<Answer> answers = new ArrayList<>();
-            while (questionRs.next()) {
-                String content = questionRs.getString("content");
-                boolean isCorrect = questionRs.getBoolean("is_correct");
-                Answer answer = new Answer(content, isCorrect);
-                answers.add(answer);
-            }
-            return answers;
+    Question getQuestionsFromResultSet(ResultSet resultSet) {
+        try {
+            // Getting question itself
+            String id = String.valueOf(resultSet.getInt("id"));
+            String content = resultSet.getString("content");
+            float score = resultSet.getFloat("score");
+            Question question = new Question(content, score);
+
+            // Getting answers
+            List<Answer> answers = this.getAnswersOfQuestion(id);
+            question.setAnswers(answers);
+
+            return question;
+
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
+    }
+
+    private List<Answer> getAnswersOfQuestion(String questionId) {
+
+        List<Answer> answers;
+        answers = genericDAO.findAll(
+                "SELECT content, is_correct FROM answers WHERE question = ?",
+                Map.of(1, Integer.parseInt(questionId)),
+                this::extractAnswerFromResultSet
+        );
+        return answers;
+    }
+
+    Answer extractAnswerFromResultSet(ResultSet resultSet) {
+        try {
+            String content = resultSet.getString("content");
+            boolean isCorrect = resultSet.getBoolean("is_correct");
+            return new Answer(content, isCorrect);
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+
     }
 
     @Override
