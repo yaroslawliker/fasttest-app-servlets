@@ -2,10 +2,7 @@ package org.yarek.fasttestapp.model.database.dao;
 
 import com.zaxxer.hikari.HikariDataSource;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -52,6 +49,24 @@ public class GenericDAOPostgres {
         ) {
             this.fillupPreparedStatement(preparedStatement, params);
             return preparedStatement.executeUpdate();
+        } catch (SQLException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public List<String> executeUpdateWithGeneratedKeys(String query, Map<Integer, Object> params) {
+        try (Connection connection = dataSource.getConnection();
+             PreparedStatement preparedStatement = connection.prepareStatement(query)
+        ) {
+            this.fillupPreparedStatement(preparedStatement, params);
+            preparedStatement.executeUpdate();
+
+            ResultSet generatedKeys = preparedStatement.getGeneratedKeys();
+            List<String> result = new ArrayList<>();
+            while (generatedKeys.next()) {
+                result.add(String.valueOf(generatedKeys.getInt(1)));
+            }
+            return result;
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
