@@ -122,4 +122,19 @@ class UserDAOPostgresTest {
         assertThrows(UsernameAlreadyExistsException.class, () -> userDAO.registerUser(sameUsername));
     }
 
+    @Test
+    void testGetUsernameById() {
+        UserDAO userDAO = new UserDAOPostgres(dataSource);
+
+        String unexistingUserID = "1000";
+        assertThrows(RuntimeException.class, () -> userDAO.getUsernameByID(unexistingUserID));
+
+        User user = new User("cooluser123", "myC00lPassword", User.Role.USER);
+        userDAO.registerUser(user);
+
+        String username = userDAO.getUsernameByID("1");
+
+        assertEquals("cooluser123", username);
+    }
+
 }
