@@ -25,7 +25,7 @@ class QuizIdFilterTest {
         uriToIdMap.put("/tests/10/", "10");
         uriToIdMap.put("/tests/fdf41dsa31/", "fdf41dsa31");
 
-        uriToIdMap.put("/tests/4", "10");
+        uriToIdMap.put("/tests/4", "4");
         uriToIdMap.put("/tests/qwsa231s", "qwsa231s");
 
         for (Map.Entry<String, String> entry : uriToIdMap.entrySet()) {
