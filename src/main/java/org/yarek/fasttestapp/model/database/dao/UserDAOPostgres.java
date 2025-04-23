@@ -6,107 +6,84 @@ import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.exceptions.UsernameAlreadyExistsException;
 
 import java.sql.*;
+import java.util.Map;
 
 public class UserDAOPostgres implements UserDAO {
 
-    public HikariDataSource getDataSource() {
-        return dataSource;
-    }
-
-    public void setDataSource(@NotNull HikariDataSource dataSource) {
-        this.dataSource = dataSource;
-    }
-
     private HikariDataSource dataSource;
+    private GenericDAOPostgres genericDAO;
+
 
     public UserDAOPostgres(HikariDataSource dataSource) {
         this.dataSource = dataSource;
+        this.genericDAO = new GenericDAOPostgres(dataSource);
     }
+
+    public HikariDataSource getDataSource() { return dataSource; }
+    public void setDataSource(@NotNull HikariDataSource dataSource) { this.dataSource = dataSource; }
 
     @Override
     public void registerUser(User user) throws UsernameAlreadyExistsException {
 
-        try(Connection connection = dataSource.getConnection();) {
+        // Getting users params
+        String username = user.getUsername();
+        String password = user.getPassword();
+        User.Role role = user.getRole();
 
-            // Getting users params
-            String username = user.getUsername();
-            String password = user.getPassword();
-            User.Role role = user.getRole();
-
-            // Checking if new username is unique
-            String getSameUsernameSQL = "SELECT username FROM users WHERE username = ?;";
-            PreparedStatement checkStatement = connection.prepareStatement(getSameUsernameSQL);
-            checkStatement.setString(1, username);
-
-
-            ResultSet resultSet = checkStatement.executeQuery();
-            if (resultSet.next()) {
-                throw new UsernameAlreadyExistsException(user.getUsername());
-            }
-
-            checkStatement.close();
-
-            // Saving the user
-            String saveUserSQL = "INSERT INTO users (username, password, role) VALUES (?, ?, ?)";
-
-            PreparedStatement saveStatement = connection.prepareStatement(saveUserSQL);
-            saveStatement.setString(1, username);
-            saveStatement.setString(2, password);
-            saveStatement.setString(3, role.name());
-            saveStatement.executeUpdate();
-
-            saveStatement.close();
-
-        } catch (SQLException e) {
-            throw new RuntimeException("Error with database", e);
+        // Checking if new username is unique
+        User sameUser = this.getUser(username);
+        if (sameUser != null) {
+            throw new UsernameAlreadyExistsException(user.getUsername());
         }
 
+        // Saving the user
+       genericDAO.executeUpdate(
+                "INSERT INTO users (username, password, role) VALUES (?, ?, ?)",
+                Map.of(1, username, 2, password, 3, role.name())
+       );
     }
 
     @Override
     public User getUser(String username) {
-        String selectUserSQL = "SELECT id, username, password, role FROM users WHERE username = ?";
-        try(Connection connection = dataSource.getConnection();
-            PreparedStatement getStatement = connection.prepareStatement(selectUserSQL);
-        ) {
-            getStatement.setString(1, username);
-            ResultSet resultSet = getStatement.executeQuery();
 
-            if (resultSet.next()) {
-                User user = new User();
-                user.setId(String.valueOf(resultSet.getInt("id")));
-                user.setUsername(resultSet.getString("username"));
-                user.setPassword(resultSet.getString("password"));
-                user.setRole(User.Role.valueOf(resultSet.getString("role")));
+        return genericDAO.findOne(
+                "SELECT id, username, password, role FROM users WHERE username = ?",
+                Map.of(1, username),
+                this::getUserFromResultSet
+        );
+    }
 
-                return user;
-            } else {
-                return null;
-            }
-
+    User getUserFromResultSet(ResultSet resultSet) {
+        try {
+            User user = new User();
+            user.setId(String.valueOf(resultSet.getInt("id")));
+            user.setUsername(resultSet.getString("username"));
+            user.setPassword(resultSet.getString("password"));
+            user.setRole(User.Role.valueOf(resultSet.getString("role")));
+            return user;
         } catch (SQLException e) {
-            throw new RuntimeException("Error with database", e);
+            throw new RuntimeException(e);
         }
     }
 
     @Override
     public String getUsernameByID(String userID) {
-        String username;
+        String username = genericDAO.findOne(
+                "SELECT username FROM users WHERE id = ?",
+                Map.of(1, userID),
+                (ResultSet resultSet) -> {
+                    try {
+                        return resultSet.getString("username");
+                    } catch (SQLException e) {
+                        throw new RuntimeException(e);
+                    }
+                }
+        );
 
-        try (Connection connection = dataSource.getConnection();
-             PreparedStatement userStatement = connection.prepareStatement("SELECT username FROM users WHERE id = ?"); ) {
-
-            userStatement.setInt(1, Integer.parseInt(userID));
-            ResultSet userRs = userStatement.executeQuery();
-            if (userRs.next()) {
-                username = userRs.getString("username");
-            } else {
-                throw new RuntimeException("No user for the quiz. user id: " + userID);
-            }
-            userRs.close();
-        } catch (SQLException e) {
-            throw new RuntimeException(e);
+        if (username==null) {
+            throw new RuntimeException("No user for the quiz. user id: " + userID);
         }
+
         return username;
     }
 }
