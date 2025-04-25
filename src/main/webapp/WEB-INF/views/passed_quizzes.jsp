@@ -84,18 +84,22 @@
         .date {
             float: right;
         }
-        .question-block {
-            gap: 10px;
+        .datetime {
+            font-size: small;
+            color: #6e6e6e;
         }
 
     </style>
 </head>
 <body>
+
+<%@include file="elements/navbar.jsp"%>
+
 <div class="container content">
     <span class="quizzes-name">Public tests</span>
 
     <div class="quizzes-container">
-    <c:forEach var="i" begin="0" end="${requestScope.quizResults.size()}">
+    <c:forEach var="i" begin="0" end="${requestScope.quizResults.size()-1}">
         <a class="container quiz-block" href="/tests/${requestScope.quizzes[i].id}">
 
             <div class="name">${requestScope.quizzes[i].name}</div>
@@ -104,20 +108,18 @@
 
             <div class="line"></div>
 
+            <div class="text">Score: ${requestScope.quizResults[i].score} / ${requestScope.maxScores[i]}</div>
+
+            <div class="datetime">Started: ${requestScope.startTimes[i]}</div>
+            <div class="datetime">Finished: ${requestScope.finishTimes[i]}</div>
+
+            <div class="line"></div>
+
             <div class="author-date">
-                <div class="author">${requestScope.usernames[i]}</div>
+                <div class="author">${requestScope.authors[i]}</div>
                 <div class="author-date-gap"></div>
                 <div class="date">${requestScope.quizzes[i].creationDate}</div>
             </div>
-
-            <div class="line"></div>
-
-            <div class="text">Score: ${requestScope.quizResults[i].score} / ${requestScope.maxScores[i]}</div>
-
-            <div class="line"></div>
-
-            <div class="text">Started: ${requestScope.quizResults[i].startTime}</div>
-            <div class="text">Finished: ${requestScope.quizResults[i].finishTime}</div>
 
 
         </a>
