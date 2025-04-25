@@ -3,18 +3,17 @@ package org.yarek.fasttestapp.routing.handlers.impl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
-import jakarta.validation.constraints.NotNull;
 import org.yarek.fasttestapp.model.database.dao.QuizDAO;
 import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.database.entities.QuizResultData;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.entities.quiz.Quiz;
 import org.yarek.fasttestapp.model.entities.quiz.QuizBlank;
+import org.yarek.fasttestapp.routing.handlers.DataTimePresenter;
 import org.yarek.fasttestapp.routing.handlers.HttpHandlerBase;
 
 import java.io.IOException;
-import java.time.LocalDateTime;
-import java.time.LocalTime;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -58,7 +57,10 @@ public class PassedHandler extends HttpHandlerBase {
             maxScores.add(blank.getMaxScore());
 
             // Format times
-            String[] times = presentDateTimes(quizResultData.getStartTime(), quizResultData.getFinishTime());
+            String[] times = DataTimePresenter.presentDateTimes(
+                    quizResultData.getStartTime(),
+                    quizResultData.getFinishTime(),
+                    NOT_FINISHED_TEXT);
             startTimes.add(times[0]);
             finishTimes.add(times[1]);
         }
@@ -73,45 +75,5 @@ public class PassedHandler extends HttpHandlerBase {
         return "passed_quizzes";
     }
 
-    String[] presentDateTimes(LocalDateTime startTime, LocalDateTime finishTime) {
-        if (finishTime == null) {
-            return new String[] { presentTime(startTime) + " " + presentDate(startTime), NOT_FINISHED_TEXT };
-        } else {
-            return formatDateTimes(startTime, finishTime);
-        }
-    }
 
-    String[] formatDateTimes(@NotNull LocalDateTime startTime,@NotNull LocalDateTime finishTime) {
-        String[] result = new String[2];
-        String startTimeResult;
-        String finishTimeResult;
-
-        startTimeResult = presentTime(startTime);
-        finishTimeResult = presentTime(finishTime);
-
-        if (startTime.getDayOfMonth() != finishTime.getDayOfMonth()
-                || startTime.getMonth() != finishTime.getMonth()
-                || startTime.getYear() != finishTime.getYear()) {
-            startTimeResult = startTimeResult + " " +  presentDate(startTime);
-            finishTimeResult = finishTimeResult + " " + presentDate(finishTime);
-        }
-
-        result[0] = startTimeResult;
-        result[1] = finishTimeResult;
-        return result;
-    }
-
-    String presentTime(LocalDateTime datetime) {
-        return datetime.getHour() + ":" + datetime.getMinute() + ":" + formatSeconds(datetime.getSecond());
-    }
-    String presentDate(LocalDateTime datetime) {
-        return  datetime.getDayOfMonth() + "." + datetime.getMonthValue() + "." + datetime.getYear();
-    }
-    String formatSeconds(int seconds) {
-        if (seconds < 10) {
-            return "0" + seconds;
-        } else {
-            return String.valueOf(seconds);
-        }
-    }
 }
