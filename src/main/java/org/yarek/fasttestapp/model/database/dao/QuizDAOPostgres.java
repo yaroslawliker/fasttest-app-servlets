@@ -330,6 +330,17 @@ public class QuizDAOPostgres implements QuizDAO {
         );
     }
 
+    @Override
+    public List<QuizResultData> getQuizResultsByQuizId(String quizID) {
+        String sql = "SELECT score, start_time, finish_time, user_id, quiz FROM results WHERE quiz=?;";
+
+        return genericDAO.findAll(
+                sql,
+                Map.of(1, Integer.valueOf(quizID)),
+                this::extractQuizResultDataFromResultSet
+        );
+    }
+
     QuizResultData extractQuizResultDataFromResultSet(ResultSet resultSet) {
         try {
             QuizResultData quizResultData = new QuizResultData();

@@ -375,4 +375,52 @@ class QuizDAOPostgresTest {
         assertEquals(quizId2, secondResult.getQuizId());
 
     }
+
+    @Test
+    public void testGetQuizResultsByQuizId() {
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+
+        String quizId = "1";
+
+        // Preparing data
+        LocalDateTime startTime1 = LocalDateTime.of(2024, 3, 1, 10, 0);
+        LocalDateTime finishTime1 = LocalDateTime.of(2024, 3, 1, 10, 20);
+        String userId1 = "1";
+        float score1 = 95.2f;
+
+        LocalDateTime startTime2 = LocalDateTime.of(2024, 3, 4, 10, 0);
+        LocalDateTime finishTime2 = LocalDateTime.of(2024, 3, 4, 10, 20);
+        String userId2 = "2";
+        float score2 = 30f;
+
+        // Saving to db
+        quizDAO.startQuizPassing(userId1, quizId, startTime1);
+        quizDAO.finishQuizPassing(userId1, quizId, finishTime1, score1);
+        quizDAO.startQuizPassing(userId2, quizId, startTime2);
+        quizDAO.finishQuizPassing(userId2, quizId, finishTime2, score2);
+
+        // Extracting from db
+        List<QuizResultData> QuizResults = quizDAO.getQuizResultsByQuizId(quizId);
+
+        // Checking size
+        assertEquals(2, QuizResults.size());
+
+        // Checking quiz result 1
+        QuizResultData firstResult = QuizResults.getFirst();
+
+        assertEquals(score1, firstResult.getScore());
+        assertEquals(startTime1, firstResult.getStartTime());
+        assertEquals(finishTime1, firstResult.getFinishTime());
+        assertEquals(userId1, firstResult.getUserId());
+        assertEquals(quizId, firstResult.getQuizId());
+
+        // Checking quiz result 1
+        QuizResultData secondResult = QuizResults.get(1);
+
+        assertEquals(score2, secondResult.getScore());
+        assertEquals(startTime2, secondResult.getStartTime());
+        assertEquals(finishTime2, secondResult.getFinishTime());
+        assertEquals(userId2, secondResult.getUserId());
+        assertEquals(quizId, secondResult.getQuizId());
+    }
 }

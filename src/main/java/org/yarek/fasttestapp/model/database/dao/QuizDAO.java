@@ -22,5 +22,6 @@ public interface QuizDAO {
     boolean isUserPassingQuiz(String userID, String quizID);
 
     List<QuizResultData> getQuizResultsOfUser(String userID);
+    List<QuizResultData> getQuizResultsByQuizId(String quizID);
 
 }
