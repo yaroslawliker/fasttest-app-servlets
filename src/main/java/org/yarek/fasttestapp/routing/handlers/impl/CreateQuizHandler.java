@@ -3,8 +3,9 @@ package org.yarek.fasttestapp.routing.handlers.impl;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.yarek.fasttestapp.model.database.dao.QuizDAO;
-import org.yarek.fasttestapp.model.database.dao.UserDAO;
 import org.yarek.fasttestapp.model.entities.User;
 import org.yarek.fasttestapp.model.entities.quiz.Answer;
 import org.yarek.fasttestapp.model.entities.quiz.Question;
@@ -17,6 +18,7 @@ import java.util.Map;
 
 public class CreateQuizHandler extends HttpHandlerBase {
     private final QuizDAO quizDAO;
+    private final Logger logger = LoggerFactory.getLogger(CreateQuizHandler.class);
 
     public CreateQuizHandler(QuizDAO quizDAO) {
         this.quizDAO = quizDAO;
@@ -37,10 +39,12 @@ public class CreateQuizHandler extends HttpHandlerBase {
         User user = (User)req.getSession().getAttribute("user");
 
         if (name == null || description == null || user == null || questions <= 0) {
+            logger.warn("Wrong request: missing some parameters");
             return "wrong_req";
         }
 
         if (user.getRole() != User.Role.TEACHER) {
+            logger.warn("Wrong request: user is not teacher");
             return "wrong_req";
         }
 
@@ -83,6 +87,7 @@ public class CreateQuizHandler extends HttpHandlerBase {
         }
 
         String quizID = quizDAO.saveNewQuiz(quiz);
+        logger.info("New quiz created: user={}, quizName={}", user.getUsername(), quiz.getName());
 
         return "tests/" + quizID + "/info@redirect";
     }
