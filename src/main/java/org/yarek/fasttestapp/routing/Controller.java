@@ -16,6 +16,7 @@ import org.yarek.fasttestapp.routing.handlers.impl.*;
 import org.yarek.fasttestapp.routing.handlers.impl.account.LoginHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.account.LogoutHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.account.SignupHandler;
+import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizInfoHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizPreviewHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizRedirectionHandler;
 import org.yarek.fasttestapp.routing.handlers.impl.quizpassing.QuizStartedHandler;
@@ -81,6 +82,7 @@ public class Controller extends HttpServlet {
         handlers.add(new QuizRedirectionHandler(quizDAO));
         handlers.add(new QuizPreviewHandler(userDAO, quizDAO));
         handlers.add((new QuizStartedHandler(userDAO, quizDAO)));
+        handlers.add(new QuizInfoHandler(userDAO, quizDAO));
 
     }
 

@@ -44,7 +44,7 @@
         .content {
             overflow: auto;
         }
-        form {
+        .form {
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -129,8 +129,8 @@
 
 </div>
 
-<form action="/tests/${requestScope.quiz.id}/started" method="post">
-    <c:forEach var="i" begin="0" end="${requestScope.resultAmount}">
+<div class="form">
+    <c:forEach var="i" begin="0" end="${requestScope.resultAmount-1}">
         <div class="container content question-block">
 
             <div class="text">${requestScope.students[i]}</div>
@@ -139,15 +139,9 @@
             <div class="datetime">Started: ${requestScope.startTimes[i]}</div>
             <div class="datetime">Finished: ${requestScope.finishTimes[i]}</div>
 
-
         </div>
     </c:forEach>
-
-    <input type="text" name="quizId" hidden="hidden" value="${requestScope.quiz.id}">
-    <button type="submit" class="container finish-button">
-        Finish test!
-    </button>
-</form>
+</div>
 
 </body>
 </html>
