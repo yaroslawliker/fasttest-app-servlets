@@ -86,6 +86,6 @@ public class CreateQuizHandler extends HttpHandlerBase {
 
         String quizID = quizDAO.saveNewQuiz(quiz);
 
-        return "quiz/" + quizID + "/info";
+        return "quiz/" + quizID + "/info@redirect";
     }
 }
