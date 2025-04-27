@@ -45,5 +45,6 @@ public class TeacherFilter extends HttpFilter {
     public void init(FilterConfig config) throws ServletException {
         teacherOnlyPathsRegEx.add("/create-test");
         teacherOnlyPathsRegEx.add("/tests/\\d+/info");
+        teacherOnlyPathsRegEx.add("/my_tests");
     }
 }

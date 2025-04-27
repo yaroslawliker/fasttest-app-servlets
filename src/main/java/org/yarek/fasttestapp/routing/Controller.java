@@ -77,6 +77,7 @@ public class Controller extends HttpServlet {
         // Multiply view handlers
         handlers.add(new QuizzesPreviewHandler(userDAO, quizDAO));
         handlers.add(new PassedHandler(userDAO, quizDAO));
+        handlers.add(new MyQuizzesHandler(quizDAO));
 
         // QuizRedirector
         handlers.add(new QuizRedirectionHandler(quizDAO));
