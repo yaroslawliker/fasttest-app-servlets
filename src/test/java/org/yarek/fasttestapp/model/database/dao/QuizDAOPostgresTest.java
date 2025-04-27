@@ -96,6 +96,24 @@ class QuizDAOPostgresTest {
     }
 
     @Test
+    public void testGetQuizPreviewsOfAuthor() throws SQLException {
+
+        // Testing results
+        QuizDAO quizDAO = new QuizDAOPostgres(dataSource);
+        List<QuizPreviewData> previews = quizDAO.getQuizPreviewsOfAuthor("1", 2);
+
+        assertEquals(2, previews.size());
+
+        assertEquals("My quiz3", previews.get(0).getName());
+        assertEquals("This is my quiz3", previews.get(0).getDescription());
+        assertEquals(Date.valueOf("2024-03-30"), previews.get(0).getCreationDate());
+
+        assertEquals("My quiz1", previews.get(1).getName());
+        assertEquals("This is my quiz1", previews.get(1).getDescription());
+        assertEquals(Date.valueOf("2024-01-10"), previews.get(1).getCreationDate());
+    }
+
+    @Test
     public void testGetQuestById() throws SQLException {
         // Prepare DB data
         // Insert questions and answers

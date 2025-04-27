@@ -10,6 +10,7 @@ import java.util.List;
 public interface QuizDAO {
     List<QuizPreviewData> getQuizPreviews();
     List<QuizPreviewData> getQuizPreviews(int amount);
+    List<QuizPreviewData> getQuizPreviewsOfAuthor(String authorId, int amount);
 
     Quiz getQuizById(String quizId);
     String saveNewQuiz(Quiz quiz);

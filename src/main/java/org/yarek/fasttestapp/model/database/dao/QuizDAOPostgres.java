@@ -40,6 +40,15 @@ public class QuizDAOPostgres implements QuizDAO {
         );
     }
 
+    @Override
+    public List<QuizPreviewData> getQuizPreviewsOfAuthor(String authorId, int amount) {
+        return genericDAO.findAll(
+                "SELECT id, name, description, creation_date, owner FROM quizzes WHERE owner = ? ORDER BY creation_date DESC LIMIT ? ",
+                Map.of(1,  Integer.parseInt(authorId), 2, amount),
+                this::extractQuizPreviewDataFromResultSet
+        );
+    }
+
     QuizPreviewData extractQuizPreviewDataFromResultSet(ResultSet resultSet) {
         try {
             String id = resultSet.getString("id");
