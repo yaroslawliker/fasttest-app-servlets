@@ -64,10 +64,8 @@ public class CreateQuizHandler extends HttpHandlerBase {
                 float score = (scoreString != null && !scoreString.isEmpty()) ? Float.parseFloat(req.getParameter("questions[" + i + "].score")) : 1f;
 
                 Question question = new Question(questionText, score);
-                // TODO: score
-                int j=0;
+                int j;
                 String answerText = req.getParameter("questions["+i+"].answers["+1+"].text");
-                String isCoorectText = req.getParameter("questions["+i+"].answers["+1+"].isCorrect");
                 boolean isCorrect = req.getParameter("questions["+i+"].answers["+1+"].isCorrect") != null;
                 // questions["+i+"].answers["+j+"].isCorrect
                 if (answerText == null) {
