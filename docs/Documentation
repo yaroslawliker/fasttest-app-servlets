@@ -1,0 +1,56 @@
+
+    This is the main documentation document.
+    It is written in form of quick notes about some nuances, it's not going to give a
+full overview of the project.
+
+# MVC pattern
+
+    # Controller
+    The "main class" is Controller. It's a common servlet that handles path "/*".
+This class delegates the processing to handlers, which work with the request and
+return the view to show (as well as determine whether it will be forward or redirect).
+    Handlers also fill the Map named model, which is transferred to request attributes
+before forwarding.
+
+    # Handlers
+    Custom HttpHandler interface has two methods:
+        - boolean isProcessingPath: gets uri and returns whether the handler processes
+            the uri.
+        - process: gets req, resp, model and returns the name of the view.
+           Name of the view may have suffix "@redirect", for example "/home@redirect".
+         otherwise the view is a forward to .jsp file.
+           Also, handlers put some parameters String : Object to the model.
+           They also can send messages directly to resp in case of errors.
+
+    HttpHandlerBase implements a simple regex based algorithm for isProcessingPath.
+    It also make doGet, doPost ... methods to be overrided.
+
+    Most of Handlers extends HttpHandlerBase class.
+
+# Entities
+    Entities contains some business-logic classes, such as User, Quiz and Quiz components.
+    Some other entities, such as QuizPreviewData, are stored in .database package,
+they ends with ~Data and are just containers.
+
+# Database
+    App is using DAO pattern to access database.
+
+    - The actual realization is for now ~DAOPostgres.
+    - Some common table initialization scripts are stored in src/main/resources/sql/.
+    - This scripts are used by src/main/...devscipts/PostgresScripts class, as well as by tests.
+        PostgresScripts class have few methods to init and drop DB of a given schema, and a
+        public static void main method, so it can be an entrypoint.
+    - Some other DB scripts (for filling up tables) are stored in src/test/recourses/sql.
+    - There are two schemas: public and test.
+
+# JSP
+    Jsp files are also using jstl.
+    Almost every view have navbar included.
+
+# Tests
+    Tests are written suing JUnit.
+    Tests for DB interact with postgres, so they shouldn't be run in parallel (so this
+feature is disables in maven).
+    Almost of piece of code is tested, except handlers and controller.
+
+
