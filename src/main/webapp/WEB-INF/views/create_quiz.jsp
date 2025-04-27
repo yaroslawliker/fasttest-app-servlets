@@ -154,7 +154,7 @@
 </head>
 <body>
 
-  <form class="create-form" method="post" action="/create-quiz" onsubmit="return processForm()">
+  <form class="create-form" method="post" action="/create-test" onsubmit="return processForm()">
 
     <div>
       <label for="name">Enter test name:</label>
